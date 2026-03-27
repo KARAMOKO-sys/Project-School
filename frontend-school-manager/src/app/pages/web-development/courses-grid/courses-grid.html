@@ -1,0 +1,87 @@
+<section class="courses-grid-section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let course of visibleCourses">
+        <div 
+          class="course-card"
+          [class.hovered]="hoveredCourse === course.id"
+          (mouseenter)="hoveredCourse = course.id"
+          (mouseleave)="hoveredCourse = null"
+          (click)="onCourseClick(course)"
+        >
+          <!-- Image Container -->
+          <div class="card-image-wrapper">
+            <img 
+              [src]="course.imageUrl" 
+              [alt]="course.title"
+              class="course-image"
+              loading="lazy"
+            />
+            <div class="card-overlay">
+              <div class="overlay-content">
+                <button class="btn-view">
+                  <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+            <div class="level-badge" [class]="getLevelClass(course.level || '')">
+              {{ course.level }}
+            </div>
+          </div>
+          
+          <!-- Content -->
+          <div class="card-content">
+            <h3 class="course-title">{{ course.title }}</h3>
+            <div class="course-meta">
+              <div class="institution">
+                <i class="fas fa-university"></i>
+                {{ course.institution }}
+              </div>
+              <div class="category" *ngIf="course.category">
+                <i class="fas fa-tag"></i>
+                {{ course.category }}
+              </div>
+            </div>
+            
+            <div class="course-footer">
+              <a class="learn-more" [routerLink]="['/courses', course.id]">
+                Learn More
+                <i class="fas fa-arrow-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Load More Button -->
+    <div class="row mt-5" *ngIf="showLoadMore && hasMoreCourses()">
+      <div class="col-12 text-center">
+        <button 
+          class="btn-load-more" 
+          (click)="loadMoreCourses()"
+          [disabled]="isLoading"
+        >
+          <span *ngIf="!isLoading">
+            <i class="fas fa-sync-alt me-2"></i>
+            Load More Courses
+          </span>
+          <span *ngIf="isLoading">
+            <i class="fas fa-spinner fa-spin me-2"></i>
+            Loading...
+          </span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- End of Results -->
+    <div class="row mt-4" *ngIf="!hasMoreCourses() && visibleCourses.length > 0">
+      <div class="col-12 text-center">
+        <p class="end-message">
+          <i class="fas fa-check-circle me-2"></i>
+          You've reached the end of our courses
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

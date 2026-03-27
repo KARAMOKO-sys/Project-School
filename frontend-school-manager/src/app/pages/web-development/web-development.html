@@ -1,0 +1,25 @@
+<!-- Course Filter -->
+<app-course-filter
+  title="Web Development"
+  subtitle="Course category"
+  (filterChanged)="onFilterChanged($event)"
+  (filterSubmit)="onFilterSubmit($event)"
+></app-course-filter>
+
+<!-- Courses Grid -->
+<app-courses-grid
+  [courses]="filteredCourses.length ? filteredCourses : allCourses"
+  (courseClick)="onCourseClick($event)"
+></app-courses-grid>
+
+<!-- Newsletter -->
+<app-newsletter
+  title="Get every single update you will get"
+  subtitle="Subscribe now"
+  buttonText="Subscribe now"
+  placeholder="Enter your email address"
+  imageUrl="assets/cta.png"
+  (subscribed)="onNewsletterSubscribe($event)"
+></app-newsletter>
+
+<app-footer></app-footer>

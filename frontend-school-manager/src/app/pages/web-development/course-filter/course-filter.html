@@ -1,0 +1,150 @@
+<section class="course-filter-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <!-- Header -->
+        <div class="section-header">
+          <span class="section-badge">
+            <i class="fas fa-filter me-2"></i>
+            {{ subtitle }}
+          </span>
+          <h2 class="section-title">{{ title }}</h2>
+          <div class="section-divider"></div>
+        </div>
+        
+        <!-- Filter Form -->
+        <form (ngSubmit)="onSubmit()" class="filter-form">
+          <div class="row g-4">
+            <!-- Categories -->
+            <div class="col-sm-6 col-md-3">
+              <div class="form-group">
+                <label class="form-label" for="inputCategories">
+                  <i class="fas fa-tag me-2"></i>
+                  Categories
+                </label>
+                <select 
+                  class="form-select" 
+                  id="inputCategories"
+                  [(ngModel)]="selectedCategory"
+                  name="category"
+                  (change)="onFilterChange()"
+                >
+                  <option *ngFor="let category of categories" [value]="category.value">
+                    {{ category.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Level -->
+            <div class="col-sm-6 col-md-3">
+              <div class="form-group">
+                <label class="form-label" for="inputLevel">
+                  <i class="fas fa-chart-line me-2"></i>
+                  Level
+                </label>
+                <select 
+                  class="form-select" 
+                  id="inputLevel"
+                  [(ngModel)]="selectedLevel"
+                  name="level"
+                  (change)="onFilterChange()"
+                >
+                  <option *ngFor="let level of levels" [value]="level.value">
+                    {{ level.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Language -->
+            <div class="col-sm-6 col-md-3">
+              <div class="form-group">
+                <label class="form-label" for="inputLanguage">
+                  <i class="fas fa-language me-2"></i>
+                  Language
+                </label>
+                <select 
+                  class="form-select" 
+                  id="inputLanguage"
+                  [(ngModel)]="selectedLanguage"
+                  name="language"
+                  (change)="onFilterChange()"
+                >
+                  <option *ngFor="let language of languages" [value]="language.value">
+                    {{ language.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Instructor -->
+            <div class="col-sm-6 col-md-3">
+              <div class="form-group">
+                <label class="form-label" for="inputInstructor">
+                  <i class="fas fa-chalkboard-user me-2"></i>
+                  Instructor
+                </label>
+                <select 
+                  class="form-select" 
+                  id="inputInstructor"
+                  [(ngModel)]="selectedInstructor"
+                  name="instructor"
+                  (change)="onFilterChange()"
+                >
+                  <option *ngFor="let instructor of instructors" [value]="instructor.value">
+                    {{ instructor.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- Buttons -->
+            <div class="col-12">
+              <div class="button-group">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-search me-2"></i>
+                  {{ buttonText }}
+                </button>
+                <button type="button" class="btn btn-outline-secondary" (click)="resetFilters()">
+                  <i class="fas fa-undo-alt me-2"></i>
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        
+        <!-- Active Filters -->
+        <div class="active-filters" *ngIf="hasActiveFilters()">
+          <div class="active-filters-header">
+            <i class="fas fa-filter me-2"></i>
+            <span>Active Filters:</span>
+          </div>
+          <div class="filter-tags">
+            <div class="filter-tag" *ngIf="selectedCategory !== 'web-development'">
+              <span class="tag-label">Category:</span>
+              <span class="tag-value">{{ getCategoryName(selectedCategory) }}</span>
+              <button type="button" class="tag-remove" (click)="resetCategory()">×</button>
+            </div>
+            <div class="filter-tag" *ngIf="selectedLevel !== 'all'">
+              <span class="tag-label">Level:</span>
+              <span class="tag-value">{{ getLevelName(selectedLevel) }}</span>
+              <button type="button" class="tag-remove" (click)="resetLevel()">×</button>
+            </div>
+            <div class="filter-tag" *ngIf="selectedLanguage !== 'english'">
+              <span class="tag-label">Language:</span>
+              <span class="tag-value">{{ getLanguageName(selectedLanguage) }}</span>
+              <button type="button" class="tag-remove" (click)="resetLanguage()">×</button>
+            </div>
+            <div class="filter-tag" *ngIf="selectedInstructor !== 'all'">
+              <span class="tag-label">Instructor:</span>
+              <span class="tag-value">{{ getInstructorName(selectedInstructor) }}</span>
+              <button type="button" class="tag-remove" (click)="resetInstructor()">×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

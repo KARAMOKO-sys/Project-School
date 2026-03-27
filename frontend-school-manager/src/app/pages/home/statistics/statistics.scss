@@ -1,0 +1,263 @@
+// Couleurs
+$yellow: #ffc107;
+$dark-yellow: #ffb300;
+$light-yellow: #fff9e6;
+$dark: #2c3e50;
+$gray: #6c757d;
+$white: #ffffff;
+
+.statistics-section {
+  position: relative;
+  padding: 80px 0;
+  overflow: hidden;
+  
+  @media (max-width: 768px) {
+    padding: 50px 0;
+  }
+  
+  @media (max-width: 576px) {
+    padding: 40px 0;
+  }
+}
+
+.bg-holder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba($dark, 0.95), rgba($dark, 0.85));
+  }
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+// Stat Card
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  transition: all 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  &:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba($yellow, 0.5);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    
+    .icon-wrapper {
+      transform: scale(1.1);
+    }
+    
+    .progress-bar {
+      background: $yellow;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+}
+
+// Icon Wrapper
+.icon-wrapper {
+  margin-bottom: 1.5rem;
+  transition: transform 0.4s ease;
+  
+  .stat-icon {
+    height: 70px;
+    width: auto;
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+    
+    @media (max-width: 768px) {
+      height: 55px;
+    }
+    
+    @media (max-width: 576px) {
+      height: 45px;
+    }
+  }
+}
+
+// Counter
+.counter-wrapper {
+  margin-bottom: 0.75rem;
+  
+  .counter-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: $yellow;
+    margin: 0;
+    line-height: 1.2;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    
+    @media (max-width: 768px) {
+      font-size: 2.2rem;
+    }
+    
+    @media (max-width: 576px) {
+      font-size: 1.8rem;
+    }
+    
+    .counter-suffix,
+    .counter-prefix {
+      font-size: 1.8rem;
+      
+      @media (max-width: 768px) {
+        font-size: 1.4rem;
+      }
+      
+      @media (max-width: 576px) {
+        font-size: 1.2rem;
+      }
+    }
+  }
+}
+
+// Label
+.stat-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $white;
+  letter-spacing: 1px;
+  margin: 0;
+  text-transform: uppercase;
+  opacity: 0.9;
+  
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+  }
+  
+  @media (max-width: 576px) {
+    font-size: 0.7rem;
+  }
+}
+
+// Progress Bar
+.stat-progress {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  margin-top: 1rem;
+  overflow: hidden;
+  
+  .progress-bar {
+    height: 100%;
+    background: rgba($yellow, 0.7);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-card {
+  animation: fadeInUp 0.6s ease backwards;
+  
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.stat-card:hover .counter-number {
+  animation: pulse 0.5s ease;
+}
+
+// Responsive
+@media (max-width: 991px) {
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .stat-card {
+    padding: 1.2rem;
+  }
+  
+  .icon-wrapper .stat-icon {
+    height: 40px;
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .icon-wrapper,
+  .counter-number {
+    animation: none;
+    transition: none;
+  }
+  
+  .stat-card:hover {
+    transform: none;
+  }
+}
+
+// Print Styles
+@media print {
+  .bg-holder {
+    background: none !important;
+    
+    .overlay {
+      display: none;
+    }
+  }
+  
+  .stat-card {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    
+    .stat-icon {
+      filter: none;
+    }
+    
+    .counter-number {
+      color: $dark;
+    }
+    
+    .stat-label {
+      color: $gray;
+    }
+  }
+}

@@ -1,0 +1,66 @@
+<!-- Hero Section -->
+<app-hero
+  title="Learn New Skills Online Find Best Courses"
+  subtitle="Become Master"
+  buttonText="Get A Quote"
+  secondaryButtonText="Read more"
+  imageUrl="assets/hero-header.png"
+  primaryButtonLink="/contact"
+  secondaryButtonLink="/about"
+  (primaryClick)="onGetQuote()"
+  (secondaryClick)="onReadMore()"
+></app-hero>
+
+<!-- Course Banner -->
+<app-course-banner
+  courseTitle="Basic in Python"
+  imageUrl="assets/funfacts.png"
+  [targetDate]="courseStartDate"
+></app-course-banner>
+
+<!-- Featured Courses -->
+<app-featured-courses
+  sectionTitle="Top Featured Courses"
+  [courses]="courses"
+  (courseClick)="onCourseClick($event)"
+></app-featured-courses>
+
+<!-- Student Feedback -->
+<app-student-feedback
+  title="Successful Student"
+  highlightText="Feedback"
+  [student]="{
+    id: 1,
+    name: 'Kimmie Vo',
+    role: 'Junior Designer',
+    feedback: 'The courses are amazing!',
+    courses: [
+      {
+        id: 1,
+        title: 'Modern and Contemporary Art and Design',
+        institution: 'The Museum of Modern Art',
+        imageUrl: 'assets/img/gallery/art-design.png'
+      }
+    ]
+  }"
+  coursesTitle="The courses that Kimmie has taken"
+  studentImageUrl="assets/student-feedback.png"
+  (studentClick)="onStudentClick($event)"
+  (courseClick)="onStudentCourseClick($event)"
+></app-student-feedback>
+
+<!-- Statistics -->
+<app-statistics></app-statistics>
+
+
+<!-- Newsletter -->
+<app-newsletter
+  title="Get every single update you will get"
+  subtitle="Subscribe now"
+  buttonText="Subscribe now"
+  placeholder="Enter your email address"
+  imageUrl="assets/cta.png"
+  (subscribed)="onNewsletterSubscribe($event)"
+></app-newsletter>
+
+<app-footer></app-footer>

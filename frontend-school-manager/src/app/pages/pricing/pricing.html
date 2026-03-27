@@ -1,0 +1,19 @@
+<!-- Pricing Section -->
+<app-child-pricing
+  title="Get in Reasonable Price"
+  subtitle="Our Plans"
+  (billingToggle)="onBillingToggle($event)"
+  (planSelected)="onPlanSelected($event)"
+></app-child-pricing>
+
+<!-- Newsletter -->
+<app-newsletter
+  title="Get every single update you will get"
+  subtitle="Subscribe now"
+  buttonText="Subscribe now"
+  placeholder="Enter your email address"
+  imageUrl="assets/cta.png"
+  (subscribed)="onNewsletterSubscribe($event)"
+></app-newsletter>
+
+<app-footer></app-footer>

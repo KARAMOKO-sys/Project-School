@@ -1,0 +1,50 @@
+<section class="hero-section" id="home">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Image Column -->
+      <div class="col-md-5 col-lg-6 order-0 order-md-1 text-end">
+        <div class="image-wrapper">
+          <img 
+            class="hero-image" 
+            [src]="imageUrl" 
+            width="470" 
+            [alt]="imageAlt"
+            loading="lazy"
+          />
+          <div class="image-overlay"></div>
+        </div>
+      </div>
+      
+      <!-- Content Column -->
+      <div class="col-md-7 col-lg-6 text-md-start text-center content-wrapper">
+        <span class="badge mb-3">
+          <i class="fas fa-star me-1"></i>
+          {{ subtitle }}
+        </span>
+        <h1 class="hero-title">
+          {{ title }}
+        </h1>
+        <div class="d-flex gap-3 justify-content-md-start justify-content-center flex-wrap mt-4">
+          <a 
+            class="btn btn-primary btn-hero" 
+            [routerLink]="primaryButtonLink"
+            (click)="onPrimaryClick()"
+            role="button"
+          >
+            <i class="fas fa-rocket me-2"></i>
+            {{ buttonText }}
+          </a>
+          <a 
+            class="btn btn-outline-secondary btn-hero-outline" 
+            [routerLink]="secondaryButtonLink"
+            (click)="onSecondaryClick()"
+            role="button"
+          >
+            <i class="fas fa-book-open me-2"></i>
+            {{ secondaryButtonText }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

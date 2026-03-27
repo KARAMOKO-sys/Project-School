@@ -1,0 +1,89 @@
+<footer class="footer">
+  <!-- Main Footer -->
+  <div class="footer-main">
+    <div class="container">
+      <div class="row g-4">
+        <!-- Company Info Column -->
+        <div class="col-12 col-lg-6">
+          <div class="footer-brand">
+            <a class="footer-logo" routerLink="/">
+              <img [src]="logoUrl" [alt]="logoAlt" height="51" />
+            </a>
+            <p class="footer-address">
+              <i class="fas fa-map-marker-alt me-3"></i>
+              <span>{{ address }}, {{ city }}</span>
+            </p>
+            <p class="footer-phone">
+              <i class="fas fa-phone-alt me-3"></i>
+              <a href="tel:{{ phone }}">{{ phone }}</a>
+              <span class="mx-2">|</span>
+              <a href="tel:{{ supportPhone }}">{{ supportPhone }} (Support)</a>
+            </p>
+            <p class="footer-email">
+              <i class="fas fa-envelope me-3"></i>
+              <a href="mailto:{{ email }}">{{ email }}</a>
+            </p>
+            
+            <!-- Social Links -->
+            <div class="footer-social">
+              <a 
+                *ngFor="let social of socialLinks"
+                [href]="social.url"
+                [target]="social.external ? '_blank' : '_self'"
+                class="social-icon"
+                [attr.aria-label]="social.label"
+                (click)="onLinkClick(social)"
+              >
+                <i [class]="getSocialIcon(social.label)"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer Sections -->
+        <div class="col-12 col-lg-6">
+          <div class="row g-4">
+            <div *ngFor="let section of sections" class="col-6 col-md-4">
+              <div class="footer-section">
+                <h5 class="footer-section-title">{{ section.title }}</h5>
+                <ul class="footer-links">
+                  <li *ngFor="let link of section.links">
+                    <a 
+                      [routerLink]="link.url"
+                      [href]="link.external ? link.url : null"
+                      [target]="link.external ? '_blank' : '_self'"
+                      (click)="onLinkClick(link)"
+                    >
+                      {{ link.label }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Copyright Bar -->
+  <div class="footer-copyright">
+    <div class="container">
+      <div class="row align-items-center gy-3">
+        <div class="col-12 col-md-6 text-center text-md-start">
+          <p class="copyright-text">
+            All rights Reserved &copy; {{ companyName }}, {{ currentYear }}
+          </p>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-end">
+          <p class="credit-text">
+            Made with
+            <i class="fas fa-heart heart-icon"></i>
+            by
+            <a href="https://themewagon.com/" target="_blank" class="credit-link">ThemeWagon</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

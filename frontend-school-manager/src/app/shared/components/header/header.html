@@ -1,0 +1,89 @@
+<!-- Top Bar - Version Jaune -->
+<section class="top-bar py-2 d-none d-sm-block">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-auto d-none d-lg-block">
+        <p class="my-2">
+          <i class="fas fa-map-marker-alt me-2"></i>
+          <span>1600 Amphitheatre Parkway, CA 94043</span>
+        </p>
+      </div>
+      <div class="col-auto ms-md-auto order-md-2 d-none d-sm-block">
+        <ul class="social-icons list-unstyled list-inline my-2">
+          <li class="list-inline-item">
+            <a class="social-link" href="#!" target="_blank">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a class="social-link" href="#!" target="_blank">
+              <i class="fab fa-pinterest"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a class="social-link" href="#!" target="_blank">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a class="social-link" href="#!" target="_blank">
+              <i class="fab fa-instagram"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-auto">
+        <p class="my-2">
+          <i class="fas fa-envelope me-2"></i>
+          <a class="email-link" href="mailto:vctung@outlook.com">vctung@outlook.com</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Navigation Bar - Version Jaune -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top main-navbar py-3" [class.navbar-scrolled]="isScrolled">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">
+      <img [src]="logoUrl" height="45" alt="logo" />
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item" *ngFor="let menuItem of menuItems">
+          <a class="nav-link" [routerLink]="menuItem.route" routerLinkActive="active">
+            {{ menuItem.label }}
+          </a>
+        </li>
+      </ul>
+
+      <div class="d-flex gap-2">
+        <!-- Desktop Search -->
+        <div class="dropdown">
+          <button class="btn btn-search" data-bs-toggle="dropdown">
+            <i class="fas fa-search"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end p-3">
+            <form (ngSubmit)="onSearch(searchQuery)">
+              <input type="search" class="form-control" placeholder="Search..." [(ngModel)]="searchQuery" name="searchQuery">
+            </form>
+          </ul>
+        </div>
+
+        <!-- Sign Up Button -->
+        <a class="btn btn-signup" (click)="onSignUp()" [routerLink]="signUpRoute">Sign Up</a>
+      </div>
+
+      <!-- Mobile Search -->
+      <form class="d-flex mt-3 d-lg-none" (ngSubmit)="onSearch(searchQuery)">
+        <input class="form-control me-2" type="search" placeholder="Search" [(ngModel)]="searchQuery" name="searchQuery">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>

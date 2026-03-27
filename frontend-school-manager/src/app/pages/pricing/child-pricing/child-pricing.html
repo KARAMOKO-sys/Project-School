@@ -1,0 +1,121 @@
+<section class="pricing-section">
+  <div class="container">
+    <!-- Header -->
+    <div class="row align-items-end mb-5">
+      <div class="col-md-7">
+        <div class="section-header">
+          <span class="section-badge">
+            <i class="fas fa-tag me-2"></i>
+            {{ subtitle }}
+          </span>
+          <h2 class="section-title">{{ title }}</h2>
+          <div class="section-divider"></div>
+        </div>
+      </div>
+      
+      <!-- Billing Toggle -->
+      <div class="col-md-5">
+        <div class="billing-toggle">
+          <span class="toggle-label" [class.active]="!isYearly">{{ monthlyLabel }}</span>
+          <div class="toggle-switch">
+            <input 
+              type="checkbox" 
+              id="billingToggle" 
+              [ngModel]="isYearly"
+              (ngModelChange)="isYearly = $event; onBillingToggle()"
+              name="billingToggle"
+            />
+            <label for="billingToggle" class="toggle-slider"></label>
+          </div>
+          <span class="toggle-label" [class.active]="isYearly">
+            {{ yearlyLabel }}
+            <span class="savings-badge" *ngIf="isYearly">Save 20%</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Pricing Cards -->
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let plan of plans">
+        <div 
+          class="pricing-card"
+          [class.popular]="plan.popular"
+          [class.hovered]="hoveredPlan === plan.id"
+          (mouseenter)="hoveredPlan = plan.id"
+          (mouseleave)="hoveredPlan = null"
+        >
+          <!-- Popular Badge -->
+          <div class="popular-badge" *ngIf="plan.popular">
+            <i class="fas fa-star"></i>
+            Most Popular
+          </div>
+          
+          <!-- Plan Header -->
+          <div class="plan-header">
+            <div class="plan-badge" [ngClass]="plan.badgeClass">
+              {{ plan.badge }}
+            </div>
+            <h3 class="plan-name">{{ plan.name }}</h3>
+            <p class="plan-description">{{ plan.description }}</p>
+          </div>
+          
+          <!-- Price -->
+          <div class="plan-price">
+            <span class="currency">$</span>
+            <span class="price">{{ getCurrentPrice(plan) }}</span>
+            <span class="period">{{ getPriceSuffix() }}</span>
+            <div class="savings" *ngIf="hasSavings(plan) && isYearly">
+              Save ${{ getAnnualSavings(plan) }}/year
+            </div>
+          </div>
+          
+          <!-- Features -->
+          <ul class="plan-features">
+            <li *ngFor="let feature of plan.features">
+              <i class="fas" [ngClass]="{'fa-check': feature.included, 'fa-times': !feature.included}"></i>
+              <span [class.disabled]="!feature.included">{{ feature.name }}</span>
+            </li>
+          </ul>
+          
+          <!-- Button -->
+          <div class="plan-action">
+            <a 
+              class="btn"
+              [ngClass]="plan.buttonClass"
+              [routerLink]="plan.name === 'Enterprise' ? '/contact' : '/checkout'"
+              (click)="onPlanSelect(plan)"
+            >
+              {{ plan.buttonText }}
+              <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Trust Badges -->
+    <div class="row mt-5">
+      <div class="col-12 text-center">
+        <div class="trust-badges">
+          <div class="trust-item">
+            <i class="fas fa-lock"></i>
+            <span>Secure Payment</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-undo-alt"></i>
+            <span>30-Day Money Back</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-headset"></i>
+            <span>24/7 Support</span>
+          </div>
+          <div class="trust-item">
+            <i class="fas fa-certificate"></i>
+            <span>Certificate Included</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

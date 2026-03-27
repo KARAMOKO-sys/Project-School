@@ -1,0 +1,96 @@
+<section class="student-feedback">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <!-- Student Card Column -->
+      <div class="col-lg-6">
+        <div class="student-card" (click)="onStudentClick()">
+          <div class="student-image-wrapper">
+            <img 
+              [src]="studentImageUrl" 
+              [alt]="student.name"
+              class="student-image"
+              loading="lazy"
+            />
+            <div class="student-overlay">
+              <i class="fas fa-play-circle"></i>
+            </div>
+          </div>
+          
+          <div class="student-info">
+            <div class="student-details">
+              <h5 class="student-name">{{ student.name }}</h5>
+              <p class="student-role">{{ student.role }}</p>
+            </div>
+            <div class="student-quote">
+              <i class="fas fa-quote-left"></i>
+              <p>{{ student.feedback }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Column -->
+      <div class="col-lg-6">
+        <div class="content-wrapper">
+          <div class="section-header">
+            <span class="section-badge">
+              <i class="fas fa-star me-2"></i>
+              Testimonials
+            </span>
+            <h2 class="section-title">
+              {{ title }}
+              <span class="highlight">{{ highlightText }}</span>
+            </h2>
+            <div class="section-divider"></div>
+          </div>
+
+          <p class="section-description">
+            {{ description }}
+          </p>
+
+          <div class="courses-section">
+            <h5 class="courses-title">
+              <i class="fas fa-graduation-cap me-2"></i>
+              {{ coursesTitle }}
+            </h5>
+
+            <div class="course-card-mini" *ngFor="let course of student.courses">
+              <div class="course-card-content" (click)="onCourseClick(course, $event)">
+                <div class="course-image-wrapper">
+                  <img 
+                    [src]="course.imageUrl" 
+                    [alt]="course.title"
+                    class="course-image-mini"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="course-info">
+                  <h6 class="course-title-mini">{{ course.title }}</h6>
+                  <p class="course-institution">{{ course.institution }}</p>
+                </div>
+                <div class="course-arrow">
+                  <i class="fas fa-arrow-right"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <div class="stat-item">
+              <div class="stat-number">500+</div>
+              <div class="stat-label">Students Enrolled</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">98%</div>
+              <div class="stat-label">Satisfaction Rate</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">50+</div>
+              <div class="stat-label">Expert Instructors</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

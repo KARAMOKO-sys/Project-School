@@ -1,0 +1,78 @@
+<section class="featured-courses">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="section-header">
+          <span class="section-badge">
+            <i class="fas fa-graduation-cap me-2"></i>
+            Featured Courses
+          </span>
+          <h2 class="section-title">{{ sectionTitle }}</h2>
+          <div class="section-divider"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let course of courses">
+        <div class="course-card" (click)="onCourseClick(course)">
+          <div class="card-image-wrapper">
+            <img 
+              [src]="course.imageUrl" 
+              [alt]="course.title"
+              class="course-image"
+              loading="lazy"
+            />
+            <div class="card-overlay">
+              <span class="course-category">{{ course.category }}</span>
+              <button class="btn-view">
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <div class="card-header-info">
+              <div class="rating">
+                <!-- <i *ngFor="let star of getStars(course.rating)" 
+                   [class]="star === 1 ? 'fas fa-star' : (star === 0.5 ? 'fas fa-star-half-alt' : 'far fa-star')">
+                </i> -->
+                <span class="rating-value">{{ course.rating }}</span>
+              </div>
+              <div class="students-count">
+                <i class="fas fa-users"></i>
+                {{ course.students | number }}
+              </div>
+            </div>
+            
+            <h3 class="course-title">{{ course.title }}</h3>
+            
+            <div class="course-meta">
+              <div class="institution">
+                <i class="fas fa-university"></i>
+                {{ course.institution }}
+              </div>
+              <div class="price" *ngIf="course.price">
+                ${{ course.price }}
+              </div>
+            </div>
+            
+            <a class="course-link" [routerLink]="['/courses', course.id]">
+              Learn More
+              <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 text-center">
+        <a class="btn btn-view-all" routerLink="/courses">
+          View All Courses
+          <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

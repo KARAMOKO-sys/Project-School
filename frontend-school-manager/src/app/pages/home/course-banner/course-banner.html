@@ -1,0 +1,73 @@
+<section class="course-banner">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="banner-card">
+          <div class="banner-content">
+            <div class="row align-items-center g-4">
+              <!-- Image Column -->
+              <div class="col-lg-4 col-xl-3 text-center text-xl-start">
+                <div class="image-wrapper">
+                  <img 
+                    [src]="imageUrl" 
+                    [alt]="imageAlt" 
+                    class="banner-image"
+                    loading="lazy"
+                  />
+                  <div class="image-shine"></div>
+                </div>
+              </div>
+              
+              <!-- Text Column -->
+              <div class="col-lg-8 col-xl-5">
+                <div class="text-wrapper">
+                  <span class="badge">
+                    <i class="fas fa-graduation-cap me-2"></i>
+                    Upcoming Course
+                  </span>
+                  <h2 class="banner-title">
+                    Learn <span class="highlight">{{ courseTitle }}</span>
+                  </h2>
+                  <p class="banner-description">
+                    Master Python programming from scratch with hands-on projects and expert guidance
+                  </p>
+                </div>
+              </div>
+              
+              <!-- Timer Column -->
+              <div class="col-lg-12 col-xl-4">
+                <div class="timer-wrapper">
+                  <div class="timer-box">
+                    <div class="timer-unit">
+                      <span class="timer-number">{{ formatNumber(days) }}</span>
+                      <span class="timer-label">Days</span>
+                    </div>
+                    <div class="timer-separator">:</div>
+                    <div class="timer-unit">
+                      <span class="timer-number">{{ formatNumber(hours) }}</span>
+                      <span class="timer-label">Hours</span>
+                    </div>
+                    <div class="timer-separator">:</div>
+                    <div class="timer-unit">
+                      <span class="timer-number">{{ formatNumber(minutes) }}</span>
+                      <span class="timer-label">Minutes</span>
+                    </div>
+                    <div class="timer-separator">:</div>
+                    <div class="timer-unit">
+                      <span class="timer-number">{{ formatNumber(seconds) }}</span>
+                      <span class="timer-label">Seconds</span>
+                    </div>
+                  </div>
+                  <a class="btn btn-enroll" routerLink="/courses/python">
+                    Enroll Now
+                    <i class="fas fa-arrow-right ms-2"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

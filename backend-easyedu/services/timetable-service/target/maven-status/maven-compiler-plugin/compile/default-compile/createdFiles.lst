@@ -1,0 +1,11 @@
+com/edueasy/timetable/model/ScheduleTemplate$ScheduleTemplateBuilder.class
+com/edueasy/timetable/model/ScheduleTemplate.class
+com/edueasy/timetable/model/Timetable$TimetableBuilder.class
+com/edueasy/timetable/model/Reservation$ReservationBuilder.class
+com/edueasy/timetable/model/WeeklySlot$WeeklySlotBuilder.class
+com/edueasy/timetable/model/Timetable.class
+com/edueasy/timetable/model/ReservationStatus.class
+com/edueasy/timetable/model/WeeklySlot.class
+com/edueasy/timetable/model/TimetableStatus.class
+com/edueasy/timetable/TimetableServiceApplication.class
+com/edueasy/timetable/model/Reservation.class

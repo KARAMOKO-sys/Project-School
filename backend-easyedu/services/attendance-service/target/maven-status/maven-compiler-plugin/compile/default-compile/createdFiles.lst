@@ -1,0 +1,9 @@
+com/edueasy/attendance/model/Attendance.class
+com/edueasy/attendance/model/Justification$JustificationBuilder.class
+com/edueasy/attendance/model/Attendance$AttendanceBuilder.class
+com/edueasy/attendance/model/AttendanceSummary$AttendanceSummaryBuilder.class
+com/edueasy/attendance/model/Justification.class
+com/edueasy/attendance/model/AttendanceSummary.class
+com/edueasy/attendance/model/JustificationStatus.class
+com/edueasy/attendance/model/AttendanceStatus.class
+com/edueasy/attendance/AttendanceServiceApplication.class

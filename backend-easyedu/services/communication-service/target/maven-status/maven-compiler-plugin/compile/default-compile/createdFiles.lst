@@ -1,0 +1,13 @@
+com/edueasy/communication/model/Conversation.class
+com/edueasy/communication/model/ConversationType.class
+com/edueasy/communication/CommunicationServiceApplication.class
+com/edueasy/communication/model/Message.class
+com/edueasy/communication/model/Attachment$AttachmentBuilder.class
+com/edueasy/communication/model/Notification$NotificationBuilder.class
+com/edueasy/communication/model/Conversation$ConversationBuilder.class
+com/edueasy/communication/model/NotificationChannel.class
+com/edueasy/communication/model/Message$MessageBuilder.class
+com/edueasy/communication/model/MessageType.class
+com/edueasy/communication/model/Attachment.class
+com/edueasy/communication/model/NotificationType.class
+com/edueasy/communication/model/Notification.class

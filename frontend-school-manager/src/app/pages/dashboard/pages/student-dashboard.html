@@ -1,0 +1,210 @@
+<!-- features/dashboard/components/student-dashboard/student-dashboard.html -->
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h2>📚 ÉducLearn</h2>
+      <p class="subtitle">Continuez votre apprentissage aujourd'hui.</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li>
+          <a routerLink="/dashboard" class="active">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/my-courses">
+            <i class="fas fa-book-open"></i>
+            <span>Mes cours</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/favorites">
+            <i class="fas fa-heart"></i>
+            <span>Favoris</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/certificates">
+            <i class="fas fa-certificate"></i>
+            <span>Certificats</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/ai-quiz">
+            <i class="fas fa-robot"></i>
+            <span>Quiz IA</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/messages">
+            <i class="fas fa-envelope"></i>
+            <span>Messages</span>
+            <span class="badge">3</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/private-services">
+            <i class="fas fa-lock"></i>
+            <span>Services privés</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/history">
+            <i class="fas fa-history"></i>
+            <span>Historique</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/payments">
+            <i class="fas fa-credit-card"></i>
+            <span>Paiements</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/settings">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h1>Bonjour, {{ userFirstName }}</h1>
+        <p class="subtitle">Continuez votre apprentissage aujourd'hui.</p>
+      </div>
+      <div class="header-right">
+        <button class="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="user-profile" (click)="goToProfile()">
+          <div class="avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <span class="user-name">{{ userFirstName }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats.courses }}</h3>
+          <p>Cours</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats.hours }}</h3>
+          <p>Heures d'apprentissage</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon yellow">
+          <i class="fas fa-certificate"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats.certificates }}</h3>
+          <p>Certificats</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-info">
+          <h3>{{ stats.points }}</h3>
+          <p>Points</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mes cours -->
+    <section class="my-courses">
+      <div class="section-header">
+        <h2>Mes cours</h2>
+        <a routerLink="/my-courses" class="view-all">Voir tout →</a>
+      </div>
+
+      <div class="courses-grid">
+        <div *ngFor="let course of getPaginatedCourses()" class="course-card">
+          <div class="course-image">
+            <img
+              *ngIf="course.imageUrl"
+              [src]="course.imageUrl"
+              [alt]="course.title"
+              (error)="course.imageUrl = ''"
+            />
+            <div *ngIf="!course.imageUrl" class="course-image-placeholder">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <div class="course-progress-bar">
+              <div class="progress-fill" [style.width.%]="course.progress"></div>
+            </div>
+          </div>
+          <div class="course-info">
+            <h4>{{ course.title }}</h4>
+            <p class="course-teacher">{{ course.teacherName }}</p>
+            <div class="course-meta">
+              <span class="course-progress-text">{{ course.progress }}%</span>
+              <span class="course-lessons"
+                >{{ course.completedLessons }}/{{ course.lessonsCount }} leçons</span
+              >
+            </div>
+            <button class="continue-btn" (click)="continueCourse(course.id)">Continuer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination-container" *ngIf="getTotalPages() > 1">
+        <button
+          class="pagination-btn"
+          (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <span
+          *ngFor="let page of getPages()"
+          class="pagination-number"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </span>
+        <button
+          class="pagination-btn"
+          (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === getTotalPages()"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </section>
+  </main>
+</div>

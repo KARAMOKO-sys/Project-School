@@ -1,0 +1,14 @@
+com/edueasy/assessment/model/Assessment$AssessmentBuilder.class
+com/edueasy/assessment/model/Answer.class
+com/edueasy/assessment/model/Grade$GradeBuilder.class
+com/edueasy/assessment/model/Question$QuestionBuilder.class
+com/edueasy/assessment/model/AssessmentType.class
+com/edueasy/assessment/model/Submission$SubmissionBuilder.class
+com/edueasy/assessment/model/Assessment.class
+com/edueasy/assessment/model/Grade.class
+com/edueasy/assessment/model/Submission.class
+com/edueasy/assessment/model/Answer$AnswerBuilder.class
+com/edueasy/assessment/model/SubmissionStatus.class
+com/edueasy/assessment/model/Question.class
+com/edueasy/assessment/AssessmentServiceApplication.class
+com/edueasy/assessment/model/QuestionType.class

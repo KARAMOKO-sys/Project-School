@@ -1,0 +1,54 @@
+# Backup
+*-backup/
+
+# Backend
+**/target/
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+**/*.class
+**/*.log
+
+# Frontend
+**/node_modules/
+**/dist/
+**/.angular/
+**/.vscode/
+
+# IDEs
+**/.idea/
+**/*.iml
+**/.classpath
+**/.project
+**/.settings/
+**/nbproject/
+**/.gradle/
+
+# Système
+**/.DS_Store
+**/Thumbs.db
+
+# Dépendances
+**/*.jar
+**/*.war
+**/*.ear
+**/*.nar
+
+# Logs
+**/logs/
+**/*.log
+
+# Tests
+**/.test-output/
+**/test-output/
+
+# Spring Boot
+**/application.properties
+**/application-dev.properties
+**/application-prod.properties
+
+# Angular
+**/.env
+**/coverage/
+**/firebase-debug.log
+**/.firebase/

@@ -1,0 +1,31 @@
+package com.edueasy.school.service;
+
+{
+  "teacherNumber": "TCH009",
+  "firstName": "James",
+  "lastName": "Wilson",
+  "email": "james.wilson@school.com",
+  "phoneNumber": "+33698765432",
+  "qualification": "Master en Littérature Anglaise, Native Speaker",
+  "hireDate": "2024-09-01"
+}
+
+{
+  "teacherNumber": "TCH010",
+  "firstName": "Catherine",
+  "lastName": "Moreau",
+  "email": "catherine.moreau@school.com",
+  "phoneNumber": "+33654321098",
+  "qualification": "Doctorat en Histoire Contemporaine",
+  "hireDate": "2022-09-01"
+}
+
+{
+  "teacherNumber": "TCH011",
+  "firstName": "Philippe",
+  "lastName": "Girard",
+  "email": "philippe.girard@school.com",
+  "phoneNumber": "+33611122333",
+  "qualification": "Agrégation de Sciences de la Vie et de la Terre",
+  "hireDate": "2021-09-01"
+}

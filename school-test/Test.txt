@@ -1,0 +1,276 @@
+backend-school-manager-api/                                    ← RACINE DU PROJET
+│
+├── pom.xml                                                     ← POM PARENT UNIQUE
+│
+├── edueasy-common/                                            ← MODULE
+│   ├── pom.xml
+│   └── src/main/java/com/edueasy/common/
+│       ├── model/
+│       │   ├── Address.java
+│       │   ├── User.java
+│       │   ├── Student.java
+│       │   ├── Teacher.java
+│       │   ├── Parent.java
+│       │   ├── Administrator.java
+│       │   ├── Director.java
+│       │   ├── SupportStaff.java
+│       │   ├── Guardian.java
+│       │   ├── MedicalInfo.java
+│       │   ├── SchoolStats.java
+│       │   ├── ScheduleConstraints.java
+│       │   ├── UserDevice.java
+│       │   └── NotificationPreference.java
+│       ├── enums/
+│       │   ├── UserRole.java
+│       │   ├── UserStatus.java
+│       │   ├── EnrollmentStatus.java
+│       │   └── AdminPermission.java
+│       ├── dto/
+│       │   ├── UserDTO.java
+│       │   ├── StudentDTO.java
+│       │   ├── TeacherDTO.java
+│       │   ├── ParentDTO.java
+│       │   └── AddressDTO.java
+│       ├── exception/
+│       │   ├── UserNotFoundException.java
+│       │   ├── UnauthorizedAccessException.java
+│       │   └── ValidationException.java
+│       └── utils/
+│           ├── DateUtils.java
+│           └── ValidationUtils.java
+│
+├── edueasy-registry/                                          ← MODULE
+│   ├── pom.xml
+│   └── src/main/java/com/edueasy/registry/
+│       └── EduEasyRegistryApplication.java
+│
+├── edueasy-gateway/                                           ← MODULE
+│   ├── pom.xml
+│   └── src/main/java/com/edueasy/gateway/
+│       ├── EduEasyGatewayApplication.java
+│       └── config/
+│           ├── GatewayConfig.java
+│           └── SecurityConfig.java
+│
+├── edueasy-config/                                            ← MODULE
+│   ├── pom.xml
+│   └── src/main/resources/
+│       ├── application.yml
+│       └── config-repo/
+│           ├── user-service.yml
+│           ├── school-service.yml
+│           └── course-service.yml
+│
+├── services/                                                  ← DOSSIER CONTENEUR
+│   │
+│   ├── user-service/                                          ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/user/
+│   │       ├── UserServiceApplication.java
+│   │       ├── controller/
+│   │       │   ├── UserController.java
+│   │       │   ├── StudentController.java
+│   │       │   ├── TeacherController.java
+│   │       │   ├── ParentController.java
+│   │       │   ├── AdministratorController.java
+│   │       │   ├── DirectorController.java
+│   │       │   └── SupportStaffController.java
+│   │       ├── service/
+│   │       │   ├── UserService.java
+│   │       │   ├── StudentService.java
+│   │       │   ├── TeacherService.java
+│   │       │   ├── ParentService.java
+│   │       │   └── impl/
+│   │       │       ├── UserServiceImpl.java
+│   │       │       └── StudentServiceImpl.java
+│   │       ├── repository/
+│   │       │   ├── UserRepository.java
+│   │       │   ├── StudentRepository.java
+│   │       │   ├── TeacherRepository.java
+│   │       │   ├── ParentRepository.java
+│   │       │   ├── AdministratorRepository.java
+│   │       │   ├── DirectorRepository.java
+│   │       │   └── SupportStaffRepository.java
+│   │       ├── mapper/
+│   │       │   ├── UserMapper.java
+│   │       │   └── StudentMapper.java
+│   │       ├── security/
+│   │       │   ├── JwtTokenProvider.java
+│   │       │   ├── CustomUserDetailsService.java
+│   │       │   └── SecurityConfig.java
+│   │       └── config/
+│   │           ├── SwaggerConfig.java
+│   │           └── RedisConfig.java
+│   │
+│   ├── school-service/                                        ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/school/
+│   │       ├── SchoolServiceApplication.java
+│   │       ├── controller/
+│   │       │   ├── SchoolController.java
+│   │       │   ├── ClassController.java
+│   │       │   └── DepartmentController.java
+│   │       ├── service/
+│   │       │   ├── SchoolService.java
+│   │       │   └── impl/
+│   │       │       └── SchoolServiceImpl.java
+│   │       ├── repository/
+│   │       │   ├── SchoolRepository.java
+│   │       │   ├── ClassRepository.java
+│   │       │   └── DepartmentRepository.java
+│   │       ├── model/
+│   │       │   ├── School.java
+│   │       │   ├── SchoolType.java
+│   │       │   ├── ClassEntity.java
+│   │       │   ├── Department.java
+│   │       │   └── Room.java
+│   │       └── mapper/
+│   │           └── SchoolMapper.java
+│   │
+│   ├── course-service/                                        ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/course/
+│   │       ├── CourseServiceApplication.java
+│   │       ├── controller/
+│   │       │   ├── CourseController.java
+│   │       │   └── ContentController.java
+│   │       ├── service/
+│   │       ├── repository/
+│   │       └── model/
+│   │           ├── Course.java
+│   │           ├── CourseStatus.java
+│   │           ├── Content.java
+│   │           ├── ContentType.java
+│   │           └── Enrollment.java
+│   │
+│   ├── assessment-service/                                    ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/assessment/
+│   │       ├── AssessmentServiceApplication.java
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── repository/
+│   │       └── model/
+│   │           ├── Assessment.java
+│   │           ├── AssessmentType.java
+│   │           ├── Submission.java
+│   │           └── SubmissionStatus.java
+│   │
+│   ├── attendance-service/                                    ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/attendance/
+│   │       ├── AttendanceServiceApplication.java
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── repository/
+│   │       └── model/
+│   │           ├── Attendance.java
+│   │           ├── AttendanceStatus.java
+│   │           └── AttendanceSummary.java
+│   │
+│   ├── communication-service/                                 ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/communication/
+│   │       ├── CommunicationServiceApplication.java
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── repository/
+│   │       └── model/
+│   │           ├── Message.java
+│   │           ├── MessageType.java
+│   │           ├── Conversation.java
+│   │           ├── Notification.java
+│   │           └── NotificationType.java
+│   │
+│   ├── payment-service/                                       ← SOUS-MODULE
+│   │   ├── pom.xml
+│   │   └── src/main/java/com/edueasy/payment/
+│   │       ├── PaymentServiceApplication.java
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── repository/
+│   │       └── model/
+│   │           ├── Invoice.java
+│   │           ├── InvoiceStatus.java
+│   │           ├── Payment.java
+│   │           └── PaymentMethod.java
+│   │
+│   └── timetable-service/                                     ← SOUS-MODULE
+│       ├── pom.xml
+│       └── src/main/java/com/edueasy/timetable/
+│           ├── TimetableServiceApplication.java
+│           ├── controller/
+│           ├── service/
+│           ├── repository/
+│           └── model/
+│               ├── Timetable.java
+│               └── TimetableStatus.java
+│
+├── ia-services/                                               ← DOSSIER CONTENEUR
+│   ├── adaptive-learning/
+│   │   ├── Dockerfile
+│   │   ├── requirements.txt
+│   │   └── app/
+│   ├── tutor-chatbot/
+│   └── prediction-engine/
+│
+├── frontend/                                                  ← DOSSIER CONTENEUR
+│   ├── web-app/
+│   ├── mobile-app/
+│   └── admin-dashboard/
+│
+├── kubernetes/                                                ← CONFIGURATION
+│   ├── namespace.yaml
+│   ├── configmap.yaml
+│   ├── secrets.yaml
+│   ├── deployments/
+│   └── services/
+│
+└── scripts/                                                   ← UTILITAIRES
+    ├── build-all.sh
+    ├── deploy-dev.sh
+    └── init-db.sql
+
+
+
+package com.edueasy.user;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
+@EntityScan(basePackages = {"com.edueasy.common.models"})
+@EnableJpaRepositories(basePackages = {"com.edueasy.user.repository"})
+public class UserServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+}
+
+Je comprends pas mais lorsque j'exécute ma classe les tables:
+ ├── Address.java
+│       │   ├── User.java
+│       │   ├── Student.java
+│       │   ├── Teacher.java
+│       │   ├── Parent.java
+│       │   ├── Administrator.java
+│       │   ├── Director.java
+│       │   ├── SupportStaff.java
+│       │   ├── Guardian.java
+│       │   ├── MedicalInfo.java
+│       │   ├── SchoolStats.java
+│       │   ├── ScheduleConstraints.java
+│       │   ├── UserDevice.java
+│       │   └── NotificationPreference.java
+
+Ne crée pas je comprends si c'est du à :
+@EntityScan(basePackages = {"com.edueasy.common.models"})
+
+Ci-dessous mes logs:

@@ -22,7 +22,7 @@ export interface CourseDetail {
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './course-detail.html',
   styleUrls: ['./course-detail.scss'],
 })

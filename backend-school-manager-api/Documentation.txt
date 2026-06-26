@@ -1,0 +1,405 @@
+backend-easyedu/
+├── .idea/
+├── .mvn/
+├── .zed/
+│
+├── 📦 edueasy-common/                          # MODULE COMMUN (Partagé par tous)
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       │   └── com/edueasy/common/
+│   │       │       ├── config/                 # Configurations communes
+│   │       │       │   ├── SwaggerConfig.java
+│   │       │       │   ├── OpenAPIConfig.java
+│   │       │       │   └── CorsConfig.java
+│   │       │       ├── dto/                    # Data Transfer Objects
+│   │       │       │   ├── ApiResponse.java
+│   │       │       │   ├── PageResponse.java
+│   │       │       │   ├── ValidationError.java
+│   │       │       │   ├── StudentRequestDTO.java
+│   │       │       │   ├── StudentResponseDTO.java
+│   │       │       │   ├── TeacherRequestDTO.java
+│   │       │       │   ├── TeacherResponseDTO.java
+│   │       │       │   ├── TeacherAuthResponseDTO.java
+│   │       │       │   ├── TeacherSimpleRegisterDTO.java
+│   │       │       │   ├── TeacherSimpleRequestDTO.java
+│   │       │       │   ├── ChangePasswordRequestDTO.java
+│   │       │       │   └── UserStatusUpdateDTO.java
+│   │       │       ├── enums/                  # Enumerations
+│   │       │       │   ├── UserRole.java
+│   │       │       │   ├── UserStatus.java
+│   │       │       │   ├── StatutUserSimple.java
+│   │       │       │   ├── LevelTeacher.java
+│   │       │       │   ├── AdminPermission.java
+│   │       │       │   └── ...
+│   │       │       ├── exception/              # Gestion des exceptions
+│   │       │       │   ├── GlobalExceptionHandler.java
+│   │       │       │   ├── ResourceNotFoundException.java
+│   │       │       │   ├── DuplicateResourceException.java
+│   │       │       │   ├── UnauthorizedAccessException.java
+│   │       │       │   └── BusinessException.java
+│   │       │       ├── model/                  # Entités JPA partagées
+│   │       │       │   ├── User.java
+│   │       │       │   ├── Student.java
+│   │       │       │   ├── StudentSimple.java
+│   │       │       │   ├── Teacher.java
+│   │       │       │   ├── TeacherSimple.java
+│   │       │       │   ├── Admin.java
+│   │       │       │   ├── Director.java
+│   │       │       │   ├── Parent.java
+│   │       │       │   ├── Guardian.java
+│   │       │       │   ├── SupportStaff.java
+│   │       │       │   ├── Address.java
+│   │       │       │   ├── AuditTimestamps.java
+│   │       │       │   ├── NotificationPreference.java
+│   │       │       │   ├── MedicalInfo.java
+│   │       │       │   ├── ScheduleConstraints.java
+│   │       │       │   ├── SchoolStats.java
+│   │       │       │   └── UserDevice.java
+│   │       │       ├── security/               # Sécurité centralisée
+│   │       │       │   ├── JwtUtil.java
+│   │       │       │   ├── JwtAuthenticationFilter.java
+│   │       │       │   └── SecurityConstants.java
+│   │       │       ├── utils/                  # Utilitaires
+│   │       │       │   ├── PasswordGenerator.java
+│   │       │       │   ├── CodeGenerator.java
+│   │       │       │   └── DateUtils.java
+│   │       │       ├── event/                  # Événements Kafka
+│   │       │       │   ├── TeacherCreatedEvent.java
+│   │       │       │   ├── StudentEnrolledEvent.java
+│   │       │       │   └── PaymentEvent.java
+│   │       │       └── EduEasyCommonApplication.java
+│   │       └── resources/
+│   │           └── META-INF/
+│   │               └── spring.factories
+│   ├── test/
+│   ├── target/
+│   └── pom.xml
+│
+├── 📦 edueasy-config/                         # SPRING CLOUD CONFIG
+│   ├── config-repo/                            # Dépôt de configuration
+│   │   ├── application.properties
+│   │   ├── application-dev.properties
+│   │   ├── application-prod.properties
+│   │   ├── user-service.properties
+│   │   ├── course-service.properties
+│   │   ├── school-service.properties
+│   │   ├── assessment-service.properties
+│   │   ├── attendance-service.properties
+│   │   ├── communication-service.properties
+│   │   ├── payment-service.properties
+│   │   └── timetable-service.properties
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/edueasy/config/
+│   │   │   │       └── EduEasyConfigApplication.java
+│   │   │   └── resources/
+│   │   │       └── application.properties
+│   │   └── test/
+│   ├── target/
+│   ├── Dockerfile
+│   └── pom.xml
+│
+├── 📦 edueasy-registry/                       # SERVICE DISCOVERY (Eureka)
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/
+│   │       │   └── com/edueasy/registry/
+│   │       │       ├── config/
+│   │       │       │   └── SecurityConfig.java
+│   │       │       └── EduEasyRegistryApplication.java
+│   │       └── resources/
+│   │           └── application.properties
+│   ├── test/
+│   ├── target/
+│   ├── Dockerfile
+│   └── pom.xml
+│
+├── 📦 edueasy-gateway/                        # API GATEWAY (Spring Cloud Gateway)
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/edueasy/gateway/
+│   │   │   │       ├── config/
+│   │   │   │       │   ├── GatewayConfig.java
+│   │   │   │       │   ├── SecurityConfig.java
+│   │   │   │       │   └── CorsConfig.java
+│   │   │   │       ├── filter/
+│   │   │   │       │   ├── AuthenticationFilter.java
+│   │   │   │       │   └── LoggingFilter.java
+│   │   │   │       └── EduEasyGatewayApplication.java
+│   │   │   └── resources/
+│   │   │       └── application.yml
+│   │   └── test/
+│   ├── target/
+│   ├── Dockerfile
+│   └── pom.xml
+│
+├── 📂 services/                                # MICROSERVICES MÉTIER
+│   │
+│   ├── 📦 user-service/                       # SERVICE UTILISATEURS (Port: 8081)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/user/
+│   │   │   │   │       ├── config/            # Configuration
+│   │   │   │   │       │   ├── SecurityConfig.java
+│   │   │   │   │       │   ├── OpenAPIConfig.java
+│   │   │   │   │       │   ├── KafkaConfig.java
+│   │   │   │   │       │   └── JpaAuditingConfig.java
+│   │   │   │   │       ├── controller/        # Contrôleurs REST
+│   │   │   │   │       │   ├── StudentSimpleController.java
+│   │   │   │   │       │   ├── TeacherSimpleController.java
+│   │   │   │   │       │   ├── AuthController.java
+│   │   │   │   │       │   ├── AdminController.java
+│   │   │   │   │       │   └── ParentController.java
+│   │   │   │   │       ├── mapper/            # Mappers (Entity ↔ DTO)
+│   │   │   │   │       │   ├── StudentSimpleMapper.java
+│   │   │   │   │       │   ├── TeacherSimpleMapper.java
+│   │   │   │   │       │   └── UserMapper.java
+│   │   │   │   │       ├── repository/        # JPA Repositories
+│   │   │   │   │       │   ├── StudentSimpleRepository.java
+│   │   │   │   │       │   ├── TeacherSimpleRepository.java
+│   │   │   │   │       │   └── UserRepository.java
+│   │   │   │   │       ├── service/           # Services métier
+│   │   │   │   │       │   ├── interface/
+│   │   │   │   │       │   │   ├── StudentSimpleService.java
+│   │   │   │   │       │   │   └── TeacherSimpleService.java
+│   │   │   │   │       │   └── impl/
+│   │   │   │   │       │       ├── StudentSimpleServiceImpl.java
+│   │   │   │   │       │       ├── TeacherSimpleServiceImpl.java
+│   │   │   │   │       │       └── KafkaProducerService.java
+│   │   │   │   │       ├── client/            # Feign Clients
+│   │   │   │   │       │   └── CourseServiceClient.java
+│   │   │   │   │       └── UserServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │       ├── application.properties
+│   │   │   │       └── templates/             # Email templates
+│   │   │   └── test/
+│   │   │       ├── java/
+│   │   │       │   ├── controller/
+│   │   │       │   ├── service/
+│   │   │       │   └── integration/
+│   │   │       └── resources/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 school-service/                     # SERVICE ÉCOLES (Port: 8082)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/school/
+│   │   │   │   │       ├── config/
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       │   ├── SchoolController.java
+│   │   │   │   │       │   ├── ClassController.java
+│   │   │   │   │       │   └── DepartmentController.java
+│   │   │   │   │       ├── mapper/
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       ├── service/
+│   │   │   │   │       ├── client/
+│   │   │   │   │       └── SchoolServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 course-service/                     # SERVICE COURS (Port: 8083)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/course/
+│   │   │   │   │       ├── config/
+│   │   │   │   │       │   └── SecurityConfig.java
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       │   ├── CourseController.java
+│   │   │   │   │       │   └── ContentController.java
+│   │   │   │   │       ├── mapper/
+│   │   │   │   │       │   ├── CourseMapper.java
+│   │   │   │   │       │   └── ContentMapper.java
+│   │   │   │   │       ├── model/             # Entités
+│   │   │   │   │       │   ├── Course.java
+│   │   │   │   │       │   ├── Content.java
+│   │   │   │   │       │   ├── Enrollment.java
+│   │   │   │   │       │   ├── Category.java
+│   │   │   │   │       │   └── Tag.java
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       │   ├── CourseRepository.java
+│   │   │   │   │       │   └── ContentRepository.java
+│   │   │   │   │       ├── service/
+│   │   │   │   │       │   ├── interface/
+│   │   │   │   │       │   │   ├── CourseService.java
+│   │   │   │   │       │   │   └── ContentService.java
+│   │   │   │   │       │   └── impl/
+│   │   │   │   │       │       ├── CourseServiceImpl.java
+│   │   │   │   │       │       └── ContentServiceImpl.java
+│   │   │   │   │       ├── client/
+│   │   │   │   │       │   └── UserServiceClient.java
+│   │   │   │   │       └── CourseServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │       └── application.properties
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 assessment-service/                 # SERVICE ÉVALUATIONS (Port: 8084)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/assessment/
+│   │   │   │   │       ├── config/
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       │   ├── AssessmentController.java
+│   │   │   │   │       │   ├── QuestionController.java
+│   │   │   │   │       │   ├── SubmissionController.java
+│   │   │   │   │       │   └── GradeController.java
+│   │   │   │   │       ├── model/
+│   │   │   │   │       │   ├── Assessment.java
+│   │   │   │   │       │   ├── Question.java
+│   │   │   │   │       │   ├── Submission.java
+│   │   │   │   │       │   ├── Grade.java
+│   │   │   │   │       │   ├── Answer.java
+│   │   │   │   │       │   ├── AssessmentType.java (Enum)
+│   │   │   │   │       │   ├── QuestionType.java (Enum)
+│   │   │   │   │       │   └── SubmissionStatus.java (Enum)
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       ├── service/
+│   │   │   │   │       ├── client/
+│   │   │   │   │       └── AssessmentServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 attendance-service/                 # SERVICE PRÉSENCES (Port: 8085)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/attendance/
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       ├── model/
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       ├── service/
+│   │   │   │   │       └── AttendanceServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 communication-service/              # SERVICE COMMUNICATION (Port: 8086)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/communication/
+│   │   │   │   │       ├── config/
+│   │   │   │   │       │   ├── WebSocketConfig.java
+│   │   │   │   │       │   └── EmailConfig.java
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       │   ├── ConversationController.java
+│   │   │   │   │       │   ├── MessageController.java
+│   │   │   │   │       │   └── NotificationController.java
+│   │   │   │   │       ├── model/
+│   │   │   │   │       │   ├── Conversation.java
+│   │   │   │   │       │   ├── Message.java
+│   │   │   │   │       │   └── Notification.java
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       ├── service/
+│   │   │   │   │       └── CommunicationServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │       └── templates/email/
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 payment-service/                    # SERVICE PAIEMENTS (Port: 8087)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/payment/
+│   │   │   │   │       ├── config/
+│   │   │   │   │       │   ├── StripeConfig.java
+│   │   │   │   │       │   └── MobileMoneyConfig.java
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       │   ├── PaymentController.java
+│   │   │   │   │       │   ├── InvoiceController.java
+│   │   │   │   │       │   └── SubscriptionController.java
+│   │   │   │   │       ├── model/
+│   │   │   │   │       │   ├── Payment.java
+│   │   │   │   │       │   ├── Invoice.java
+│   │   │   │   │       │   ├── Subscription.java
+│   │   │   │   │       │   └── Transaction.java
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       ├── service/
+│   │   │   │   │       ├── client/
+│   │   │   │   │       └── PaymentServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   ├── 📦 timetable-service/                  # SERVICE EMPLOI DU TEMPS (Port: 8088)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/edueasy/timetable/
+│   │   │   │   │       ├── config/
+│   │   │   │   │       │   └── OptaPlannerConfig.java
+│   │   │   │   │       ├── controller/
+│   │   │   │   │       │   ├── TimetableController.java
+│   │   │   │   │       │   └── ReservationController.java
+│   │   │   │   │       ├── model/
+│   │   │   │   │       │   ├── Timetable.java
+│   │   │   │   │       │   ├── ScheduleTemplate.java
+│   │   │   │   │       │   ├── WeeklySlot.java
+│   │   │   │   │       │   ├── Reservation.java
+│   │   │   │   │       │   └── TimeSlot.java
+│   │   │   │   │       ├── repository/
+│   │   │   │   │       ├── service/
+│   │   │   │   │       ├── solver/
+│   │   │   │   │       │   └── TimetableSolver.java
+│   │   │   │   │       └── TimetableServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   └── test/
+│   │   ├── target/
+│   │   ├── Dockerfile
+│   │   └── pom.xml
+│   │
+│   └── 📄 pom.xml                              # Parent POM des services
+│
+├── 📂 ia-services/                            # SERVICES IA (Optionnel)
+│   ├── ai-tutor-service/
+│   ├── adaptive-learning-service/
+│   ├── prediction-service/
+│   └── recommendation-service/
+│
+├── 📂 kubernetes/                             # DÉPLOIEMENT KUBERNETES
+│   ├── namespace.yaml
+│   ├── configmap.yaml
+│   ├── secrets.yaml
+│   ├── deployments/
+│   │   ├── user-service-deployment.yaml
+│   │   ├── course-service-deployment.yaml
+│   │   └── ...
+│   └── services/
+│       ├── user-service-service.yaml
+│       └── ...
+│
+├── 📂 logs/                                   # Logs d'application
+│
+├── 📄 .gitattributes
+├── 📄 .gitignore
+├── 📄 docker-compose.yml                      # Docker Compose local
+├── 📄 docker-compose-kafka.yml               # Kafka pour développement
+├── 📄 Documentation.txt
+├── 📄 HELP.md
+├── 📄 mvnw
+├── 📄 mvnw.cmd
+└── 📄 pom.xml                                 # POM racine (parent)

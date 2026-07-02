@@ -7,9 +7,9 @@ public enum TypeCourses {
     THEORIQUE("Théorique", "fa-book", "Cours théorique"),
     PRATIQUE("Pratique", "fa-tools", "Cours pratique"),
     MIXTE("Mixte", "fa-layer-group", "Cours théorique et pratique"),
-    ATELIER("Atelier", "fa-users-cog", "Atelier pratique"),
-    LABORATOIRE("Laboratoire", "fa-flask", "Travaux en laboratoire"),
-    EN_LIGNE("En ligne", "fa-globe", "Cours à distance");
+    ATELIER("Atelier", "fa-users-cog", "Atelier pratique");
+
+    // Supprimer LABORATOIRE et EN_LIGNE
 
     private final String label;
     private final String icon;
@@ -22,15 +22,11 @@ public enum TypeCourses {
     }
 
     public boolean isPractical() {
-        return this == PRATIQUE || this == ATELIER || this == LABORATOIRE;
+        return this == PRATIQUE || this == ATELIER;
     }
 
     public boolean isTheoretical() {
         return this == THEORIQUE;
-    }
-
-    public boolean isOnline() {
-        return this == EN_LIGNE;
     }
 
     public boolean isMixed() {

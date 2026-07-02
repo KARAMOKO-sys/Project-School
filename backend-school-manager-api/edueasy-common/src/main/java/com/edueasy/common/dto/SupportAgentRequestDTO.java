@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,10 +17,12 @@ public class SupportAgentRequestDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String username;
     private String phoneNumber;
     private String department;
     private String shift;
     private LocalDate hireDate;
     private String qualification;
     private List<String> responsibilities;
+    private String password;
 }

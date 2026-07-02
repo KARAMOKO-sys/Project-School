@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,8 +56,11 @@ public class ContentServiceImpl implements ContentService {
         content.setTeacherUuid(teacherUuid);
         content.setCourseUuid(courseUuid);
 
+        // 🔥 CORRECTION : Initialiser correctement les timestamps
         AuditTimestamps timestamps = new AuditTimestamps();
-        //timestamps.init();
+        LocalDateTime now = LocalDateTime.now();
+        timestamps.setCreatedAt(now);
+        timestamps.setUpdatedAt(now);
         content.setTimestamps(timestamps);
 
         long currentContentCount = contentRepository.countByCourseUuid(courseUuid);

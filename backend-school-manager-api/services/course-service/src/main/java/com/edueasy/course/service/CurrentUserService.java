@@ -1,9 +1,12 @@
 package com.edueasy.course.service;
 
+import com.edueasy.common.security.JwtUtil;
 import com.edueasy.common.exception.UnauthorizedAccessException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,51 +16,68 @@ public class CurrentUserService {
 
     private static final Logger log = LoggerFactory.getLogger(CurrentUserService.class);
 
+    private final JwtUtil jwtUtil;
+
+    public CurrentUserService(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     /**
-     * Récupère l'UUID de l'utilisateur actuel depuis le header de la requête
-     * Pour le développement, on utilise un header X-User-Uuid
-     * En production, on extrait l'UUID du token JWT
+     * Récupère l'UUID de l'utilisateur actuel depuis le contexte Spring Security
      */
     public String getCurrentUserUuid() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            throw new UnauthorizedAccessException("No request context");
+        try {
+            // Récupérer depuis le contexte Spring Security
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated() &&
+                    !"anonymousUser".equals(authentication.getPrincipal())) {
+                String uuid = authentication.getName();
+                log.debug("✅ UUID extrait du contexte Security: {}", uuid);
+                return uuid;
+            }
+        } catch (Exception e) {
+            log.warn("⚠️ Impossible d'extraire l'UUID du contexte: {}", e.getMessage());
         }
 
-        HttpServletRequest request = attributes.getRequest();
-
-        // Option 1: Récupérer depuis le header X-User-Uuid (pour le développement)
-        String userUuid = request.getHeader("X-User-Uuid");
-        if (userUuid != null && !userUuid.isEmpty()) {
-            return userUuid;
+        // Fallback: récupérer depuis le token JWT
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                HttpServletRequest request = attributes.getRequest();
+                String authHeader = request.getHeader("Authorization");
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    String token = authHeader.substring(7);
+                    String uuid = jwtUtil.extractUuid(token);
+                    if (uuid != null) {
+                        log.debug("✅ UUID extrait du token: {}", uuid);
+                        return uuid;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("⚠️ Impossible d'extraire l'UUID du token: {}", e.getMessage());
         }
 
-        // Option 2: Récupérer depuis le token JWT
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            // Extraire l'UUID du token
-            // return jwtUtil.extractUuid(token);
-            // Pour le moment, on retourne un UUID par défaut pour le développement
-            return "teacher-default-uuid";
-        }
-
-        throw new UnauthorizedAccessException("Missing or invalid Authorization header");
+        throw new UnauthorizedAccessException("User not authenticated");
     }
 
     /**
      * Récupère le token JWT actuel
      */
     public String getCurrentToken() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            throw new UnauthorizedAccessException("No request context");
-        }
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes == null) {
+                throw new UnauthorizedAccessException("No request context");
+            }
 
-        HttpServletRequest request = attributes.getRequest();
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+            HttpServletRequest request = attributes.getRequest();
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                return authHeader.substring(7);
+            }
+        } catch (Exception e) {
+            log.warn("Erreur lors de la récupération du token: {}", e.getMessage());
         }
         throw new UnauthorizedAccessException("Missing or invalid Authorization header");
     }

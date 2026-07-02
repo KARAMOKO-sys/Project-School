@@ -21,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @Transactional(readOnly = true)
 public class SupportStaffServiceImpl implements SupportStaffService {
@@ -62,7 +64,50 @@ public class SupportStaffServiceImpl implements SupportStaffService {
 
         SupportStaff staff = supportMapper.toSupportStaffEntity(requestDTO);
         staff.setSupportAgentUuid(supportAgentUuid);
-        staff.setPasswordHash(passwordEncoder.encode(DEFAULT_PASSWORD));
+
+        // 🔥 GÉRER LE MOT DE PASSE
+        String rawPassword = requestDTO.getPassword();
+        if (rawPassword == null || rawPassword.isEmpty()) {
+            // Si aucun mot de passe fourni, utiliser le mot de passe par défaut
+            rawPassword = DEFAULT_PASSWORD;
+            log.info("Using default password for support staff: {}", requestDTO.getEmail());
+        } else {
+            log.info("Custom password provided for support staff: {}", requestDTO.getEmail());
+        }
+
+        // Encoder le mot de passe
+        staff.setPasswordHash(passwordEncoder.encode(rawPassword));
+
+        // 🔥 GÉNÉRER LE USERNAME SI NÉCESSAIRE
+        if (staff.getUsername() == null || staff.getUsername().isEmpty()) {
+            String baseUsername = requestDTO.getEmail().split("@")[0];
+            baseUsername = baseUsername.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+            if (baseUsername.length() > 30) {
+                baseUsername = baseUsername.substring(0, 30);
+            }
+
+            String username = baseUsername;
+            int counter = 1;
+
+            while (supportStaffRepository.existsByUsername(username)) {
+                username = baseUsername + counter;
+                counter++;
+                if (counter > 100) {
+                    username = baseUsername + UUID.randomUUID().toString().substring(0, 6);
+                    break;
+                }
+            }
+            staff.setUsername(username);
+            log.info("Generated username: {} for email: {}", username, requestDTO.getEmail());
+        }
+
+        staff.setRole(com.edueasy.common.enums.UserRole.SUPPORT_STAFF);
+        staff.setStatus(UserStatus.ACTIVE);
+
+        // Initialiser les champs d'audit
+        staff.initializeAuditFields();
+
         staff = supportStaffRepository.save(staff);
 
         log.info("Support staff created successfully with uuid: {} by support agent: {}", staff.getUuid(), supportAgentUuid);

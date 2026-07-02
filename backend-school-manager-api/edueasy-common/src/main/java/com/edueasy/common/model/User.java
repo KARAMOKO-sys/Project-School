@@ -1,3 +1,4 @@
+// User.java - DEVIENT UNE CLASSE ABSTRAITE SANS TABLE
 package com.edueasy.common.model;
 
 import com.edueasy.common.enums.UserRole;
@@ -17,35 +18,18 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Entity
-@Table(
-        name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"email"}),
-                @UniqueConstraint(columnNames = {"username"}),
-                @UniqueConstraint(columnNames = {"phone_number"}),
-                @UniqueConstraint(columnNames = {"uuid"})
-        },
-        indexes = {
-                @Index(name = "idx_user_email", columnList = "email"),
-                @Index(name = "idx_user_username", columnList = "username"),
-                @Index(name = "idx_user_status", columnList = "status"),
-                @Index(name = "idx_user_role", columnList = "role"),
-                @Index(name = "idx_user_uuid", columnList = "uuid")
-        }
-)
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass  // 🔥 PAS DE TABLE EN BASE DE DONNÉES
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class User extends AuditTimestamps implements UserDetails {
+public abstract class User extends AuditTimestamps implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 36, updatable = false, nullable = false)
-    private String id;  // Changé de Long à String
+    private String id;
 
     @Column(unique = true, nullable = false, updatable = false, length = 36)
     private String uuid;
@@ -121,8 +105,6 @@ public class User extends AuditTimestamps implements UserDetails {
     @Builder.Default
     private String timezone = "UTC";
 
-    // ===== Relations =====
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
@@ -131,6 +113,7 @@ public class User extends AuditTimestamps implements UserDetails {
 
     @PrePersist
     protected void onCreate() {
+        initializeAuditFields();
         if (uuid == null) {
             uuid = UUID.randomUUID().toString();
         }
@@ -154,7 +137,6 @@ public class User extends AuditTimestamps implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
-
         if (this.role.getPermissions() != null) {
             authorities.addAll(
                     this.role.getPermissions()
@@ -198,14 +180,14 @@ public class User extends AuditTimestamps implements UserDetails {
 
     // ===== Méthodes métier =====
 
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
+
     public void generateUuid() {
         if (uuid == null) {
             uuid = UUID.randomUUID().toString();
         }
-    }
-
-    public String getFullName() {
-        return this.firstName + " " + this.lastName;
     }
 
     public void incrementFailedLoginAttempts() {
@@ -307,14 +289,6 @@ public class User extends AuditTimestamps implements UserDetails {
         return status == UserStatus.ACTIVE;
     }
 
-    public boolean isAccountExpired() {
-        return false;
-    }
-
-    public boolean isCredentialsExpired() {
-        return false;
-    }
-
     public void activate() {
         this.status = UserStatus.ACTIVE;
     }
@@ -379,4 +353,7 @@ public class User extends AuditTimestamps implements UserDetails {
     public String getAuthIdentifier() {
         return email != null ? email : username;
     }
+
+    // 🔥 Ajouter une méthode abstraite pour le rôle
+    public abstract UserRole getRole();
 }

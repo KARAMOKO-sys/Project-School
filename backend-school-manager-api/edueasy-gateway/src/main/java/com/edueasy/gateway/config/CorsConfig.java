@@ -1,3 +1,4 @@
+/*
 package com.edueasy.gateway.config;
 
 import java.util.Arrays;
@@ -30,3 +31,5 @@ public class CorsConfig {
         return new CorsWebFilter(source);
     }
 }
+
+ */

@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface SupportStaffRepository extends JpaRepository<SupportStaff, Long> {
     Optional<SupportStaff> findByUuid(String uuid);
-
+    boolean existsByUsername(String username);  // ← AJOUTER CETTE MÉTHODE
     Optional<SupportStaff> findByEmail(String email);
 
     boolean existsByEmail(String email);

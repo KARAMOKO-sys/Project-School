@@ -1,9 +1,9 @@
+// TeacherSimple.java - TOUT EN UNE SEULE TABLE
 package com.edueasy.common.model;
 
 import com.edueasy.common.enums.LevelTeacher;
 import com.edueasy.common.enums.StatutUserSimple;
 import com.edueasy.common.enums.UserRole;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,7 +12,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "teachers_simple")
-@JsonTypeName("TEACHER_SIMPLE")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -20,13 +19,18 @@ import java.util.UUID;
 @SuperBuilder
 public class TeacherSimple extends User {
 
+    // 🔥 TOUS LES CHAMPS SONT DANS LA TABLE teachers_simple
+    // Les champs communs (firstName, lastName, email, etc.) sont hérités de User
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "statut_user_simple")
     private StatutUserSimple statutUserSimple;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "level_teacher")
     private LevelTeacher levelTeacher;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "teacher_number")
     private String teacherNumber;
 
     // ===== Méthodes de cycle de vie =====
@@ -52,9 +56,6 @@ public class TeacherSimple extends User {
         return UserRole.TEACHER_SIMPLE;
     }
 
-    /**
-     * Génère un numéro d'enseignant
-     */
     public void generateTeacherNumber() {
         if (teacherNumber == null) {
             String timestamp = String.valueOf(System.currentTimeMillis());
@@ -63,142 +64,102 @@ public class TeacherSimple extends User {
         }
     }
 
-    /**
-     * Vérifie si l'enseignant est actif
-     */
     public boolean isActive() {
         return statutUserSimple == StatutUserSimple.ACTIF;
     }
 
-    /**
-     * Vérifie si l'enseignant est en attente
-     */
     public boolean isPending() {
         return statutUserSimple == StatutUserSimple.EN_ATTENTE;
     }
 
-    /**
-     * Vérifie si l'enseignant est suspendu
-     */
     public boolean isSuspended() {
         return statutUserSimple == StatutUserSimple.SUSPENDU;
     }
 
-    /**
-     * Vérifie si l'enseignant est supprimé
-     */
     public boolean isDeleted() {
         return statutUserSimple == StatutUserSimple.SUPPRIME;
     }
 
-    /**
-     * Vérifie si l'enseignant est en brouillon
-     */
     public boolean isDraft() {
         return statutUserSimple == StatutUserSimple.BROUILLON;
     }
 
-    /**
-     * Vérifie si l'enseignant est inactif
-     */
     public boolean isInactive() {
         return statutUserSimple == StatutUserSimple.INACTIF;
     }
 
-    /**
-     * Active l'enseignant
-     */
     public void activate() {
         this.statutUserSimple = StatutUserSimple.ACTIF;
     }
 
-    /**
-     * Suspend l'enseignant
-     */
     public void suspend() {
         this.statutUserSimple = StatutUserSimple.SUSPENDU;
     }
 
-    /**
-     * Met l'enseignant en attente
-     */
     public void setPending() {
         this.statutUserSimple = StatutUserSimple.EN_ATTENTE;
     }
 
-    /**
-     * Supprime l'enseignant
-     */
     public void delete() {
         this.statutUserSimple = StatutUserSimple.SUPPRIME;
     }
 
-    /**
-     * Met l'enseignant en brouillon
-     */
     public void setDraft() {
         this.statutUserSimple = StatutUserSimple.BROUILLON;
     }
 
-    /**
-     * Met l'enseignant en inactif
-     */
     public void setInactive() {
         this.statutUserSimple = StatutUserSimple.INACTIF;
     }
 
-    /**
-     * Vérifie si l'enseignant a un niveau spécifique
-     */
     public boolean hasLevel(LevelTeacher level) {
         return this.levelTeacher == level;
     }
 
-    /**
-     * Vérifie si l'enseignant est de niveau débutant
-     */
     public boolean isBeginner() {
         return levelTeacher == LevelTeacher.DEBUTANT;
     }
 
-    /**
-     * Vérifie si l'enseignant est de niveau intermédiaire
-     */
     public boolean isIntermediate() {
         return levelTeacher == LevelTeacher.INTERMEDIAIRE;
     }
 
-    /**
-     * Vérifie si l'enseignant est de niveau confirmé
-     */
     public boolean isConfirmed() {
         return levelTeacher == LevelTeacher.CONFIRME;
     }
 
-    /**
-     * Vérifie si l'enseignant est de niveau expérimenté
-     */
     public boolean isExperienced() {
         return levelTeacher == LevelTeacher.EXPERIMENTE;
     }
 
-    /**
-     * Vérifie si l'enseignant est de niveau sénior
-     */
     public boolean isSenior() {
         return levelTeacher == LevelTeacher.SENIOR;
     }
 
-    /**
-     * Vérifie si l'enseignant est de niveau expert
-     */
     public boolean isExpert() {
         return levelTeacher == LevelTeacher.EXPERT;
     }
 
-    /**
-     * Retourne la description du niveau
-     */
+    public boolean isAssistant() {
+        return levelTeacher == LevelTeacher.ASSISTANT;
+    }
+
+    public boolean isJunior() {
+        return levelTeacher == LevelTeacher.JUNIOR;
+    }
+
+    public boolean isProfessor() {
+        return levelTeacher == LevelTeacher.PROFESSOR;
+    }
+
+    public boolean isMiddle() {
+        return levelTeacher == LevelTeacher.MIDDLE;
+    }
+
+    public boolean isOther() {
+        return levelTeacher == LevelTeacher.OTHER;
+    }
+
     public String getLevelDescription() {
         if (levelTeacher == null) {
             return "Niveau non défini";
@@ -210,12 +171,14 @@ public class TeacherSimple extends User {
             case EXPERIMENTE -> "Expérimenté - Très compétent";
             case SENIOR -> "Sénior - Très expérimenté";
             case EXPERT -> "Expert - Référence";
+            case MIDDLE -> "Niveau intermédiaire";
+            case ASSISTANT -> "Assistant - En apprentissage";
+            case JUNIOR -> "Junior - Débutant";
+            case PROFESSOR -> "Professeur - Confirmé";
+            case OTHER -> "Autre niveau";
         };
     }
 
-    /**
-     * Retourne l'icône du niveau
-     */
     public String getLevelIcon() {
         if (levelTeacher == null) {
             return "fa-question-circle";
@@ -227,12 +190,14 @@ public class TeacherSimple extends User {
             case EXPERIMENTE -> "fa-star";
             case SENIOR -> "fa-star";
             case EXPERT -> "fa-crown";
+            case MIDDLE -> "fa-star-half-alt";
+            case ASSISTANT -> "fa-user-plus";
+            case JUNIOR -> "fa-user-graduate";
+            case PROFESSOR -> "fa-chalkboard-teacher";
+            case OTHER -> "fa-question-circle";
         };
     }
 
-    /**
-     * Retourne la couleur du niveau
-     */
     public String getLevelColor() {
         if (levelTeacher == null) {
             return "gray";
@@ -244,12 +209,14 @@ public class TeacherSimple extends User {
             case EXPERIMENTE -> "teal";
             case SENIOR -> "purple";
             case EXPERT -> "gold";
+            case MIDDLE -> "cyan";
+            case ASSISTANT -> "light-blue";
+            case JUNIOR -> "blue";
+            case PROFESSOR -> "purple";
+            case OTHER -> "gray";
         };
     }
 
-    /**
-     * Retourne le libellé du statut - CORRIGÉ
-     */
     public String getStatusLabel() {
         if (statutUserSimple == null) {
             return "Statut non défini";
@@ -261,31 +228,10 @@ public class TeacherSimple extends User {
             case SUPPRIME -> "Supprimé";
             case BROUILLON -> "Brouillon";
             case INACTIF -> "Inactif";
-            case ENSEIGNANT -> null;
+            case ENSEIGNANT -> "Enseignant";
         };
     }
 
-    /**
-     * Retourne la couleur du statut - CORRIGÉ
-     public String getStatusColor() {
-     if (statutUserSimple == null) {
-     return "gray";
-     }
-     return switch (statutUserSimple) {
-     case ACTIF -> "green";
-     case EN_ATTENTE -> "yellow";
-     case SUSPENDU -> "orange";
-     case SUPPRIME -> "red";
-     case BROUILLON -> "blue";
-     case INACTIF -> "gray";
-     };
-     }
-     */
-
-
-    /**
-     * Retourne l'icône du statut
-     */
     public String getStatusIcon() {
         if (statutUserSimple == null) {
             return "fa-question-circle";
@@ -293,62 +239,41 @@ public class TeacherSimple extends User {
         return statutUserSimple.getIcon();
     }
 
-    /**
-     * Vérifie si l'enseignant peut être assigné à un cours
-     */
     public boolean isAvailableForAssignment() {
-        return isActive() && levelTeacher != null && levelTeacher != LevelTeacher.DEBUTANT;
+        return isActive() && levelTeacher != null &&
+                levelTeacher != LevelTeacher.DEBUTANT &&
+                levelTeacher != LevelTeacher.ASSISTANT &&
+                levelTeacher != LevelTeacher.JUNIOR;
     }
 
-    /**
-     * Vérifie si les informations sont complètes
-     */
     public boolean isProfileComplete() {
         return teacherNumber != null && !teacherNumber.isEmpty()
                 && statutUserSimple != null
                 && levelTeacher != null;
     }
 
-    /**
-     * Retourne le nom complet formaté
-     */
     public String getFullName() {
         return getFirstName() + " " + getLastName();
     }
 
-    /**
-     * Vérifie si l'enseignant a un numéro d'enseignant
-     */
     public boolean hasTeacherNumber() {
         return teacherNumber != null && !teacherNumber.isEmpty();
     }
 
-    /**
-     * Vérifie si le statut est modifiable
-     */
     public boolean isStatusEditable() {
         return statutUserSimple != StatutUserSimple.SUPPRIME;
     }
 
-    /**
-     * Vérifie si l'enseignant peut se connecter
-     */
     public boolean canLogin() {
         return statutUserSimple != null && statutUserSimple.canLogin();
     }
 
-    /**
-     * Met à jour le niveau de l'enseignant
-     */
     public void updateLevel(LevelTeacher newLevel) {
         if (newLevel != null) {
             this.levelTeacher = newLevel;
         }
     }
 
-    /**
-     * Retourne la plage d'expérience du niveau
-     */
     public String getExperienceRange() {
         if (levelTeacher == null) {
             return "Non défini";
@@ -356,9 +281,6 @@ public class TeacherSimple extends User {
         return levelTeacher.getRangeDisplay();
     }
 
-    /**
-     * Vérifie si l'enseignant a un niveau supérieur ou égal à un niveau donné
-     */
     public boolean hasLevelAtLeast(LevelTeacher level) {
         if (levelTeacher == null || level == null) {
             return false;
@@ -368,47 +290,45 @@ public class TeacherSimple extends User {
         return currentLevel >= requiredLevel;
     }
 
-    /**
-     * Retourne l'ordre du niveau - CORRIGÉ
-     */
     private int getLevelOrder(LevelTeacher level) {
         return switch (level) {
             case DEBUTANT -> 0;
+            case ASSISTANT -> 0;
+            case JUNIOR -> 0;
             case INTERMEDIAIRE -> 1;
+            case MIDDLE -> 1;
             case CONFIRME -> 2;
             case EXPERIMENTE -> 3;
             case SENIOR -> 4;
+            case PROFESSOR -> 4;
             case EXPERT -> 5;
+            case OTHER -> 0;
         };
     }
 
-    /**
-     * Retourne le prochain niveau - CORRIGÉ
-     */
     public LevelTeacher getNextLevel() {
         if (levelTeacher == null) {
             return LevelTeacher.DEBUTANT;
         }
         return switch (levelTeacher) {
             case DEBUTANT -> LevelTeacher.INTERMEDIAIRE;
+            case ASSISTANT -> LevelTeacher.JUNIOR;
+            case JUNIOR -> LevelTeacher.INTERMEDIAIRE;
             case INTERMEDIAIRE -> LevelTeacher.CONFIRME;
+            case MIDDLE -> LevelTeacher.CONFIRME;
             case CONFIRME -> LevelTeacher.EXPERIMENTE;
             case EXPERIMENTE -> LevelTeacher.SENIOR;
             case SENIOR -> LevelTeacher.EXPERT;
+            case PROFESSOR -> LevelTeacher.EXPERT;
             case EXPERT -> null;
+            case OTHER -> null;
         };
     }
 
-    /**
-     * Vérifie si l'enseignant peut être promu
-     */
     public boolean canBePromoted() {
         return getNextLevel() != null && isActive();
     }
 
-    /**
-     * Promouvoir l'enseignant au niveau supérieur
-     */
     public boolean promote() {
         LevelTeacher next = getNextLevel();
         if (next != null && isActive()) {
@@ -416,5 +336,59 @@ public class TeacherSimple extends User {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Vérifie si l'enseignant est un niveau valide pour l'enseignement
+     */
+    public boolean isValidTeacher() {
+        return levelTeacher != null &&
+                levelTeacher != LevelTeacher.OTHER &&
+                isActive();
+    }
+
+    /**
+     * Vérifie si l'enseignant peut être mentor
+     */
+    public boolean canBeMentor() {
+        return levelTeacher != null &&
+                (levelTeacher == LevelTeacher.SENIOR ||
+                        levelTeacher == LevelTeacher.EXPERT ||
+                        levelTeacher == LevelTeacher.PROFESSOR) &&
+                isActive();
+    }
+
+    /**
+     * Vérifie si l'enseignant peut encadrer des stagiaires
+     */
+    public boolean canSuperviseInterns() {
+        return levelTeacher != null &&
+                (levelTeacher == LevelTeacher.EXPERIMENTE ||
+                        levelTeacher == LevelTeacher.SENIOR ||
+                        levelTeacher == LevelTeacher.EXPERT ||
+                        levelTeacher == LevelTeacher.PROFESSOR) &&
+                isActive();
+    }
+
+    /**
+     * Obtient le niveau d'enseignement formaté
+     */
+    public String getFormattedLevel() {
+        if (levelTeacher == null) {
+            return "N/A";
+        }
+        return levelTeacher.getLabel() + " (" + levelTeacher.getRangeDisplay() + ")";
+    }
+
+    /**
+     * Vérifie si l'enseignant est éligible pour une promotion
+     */
+    public boolean isEligibleForPromotion() {
+        if (!isActive()) return false;
+        if (levelTeacher == null) return false;
+        return switch (levelTeacher) {
+            case DEBUTANT, ASSISTANT, JUNIOR, INTERMEDIAIRE, MIDDLE, CONFIRME, EXPERIMENTE, SENIOR, PROFESSOR -> true;
+            case EXPERT, OTHER -> false;
+        };
     }
 }

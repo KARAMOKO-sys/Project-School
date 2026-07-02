@@ -51,6 +51,22 @@ public class AuditTimestamps {
     private boolean isDeleted = false;
 
     /**
+     * Méthode de callback pour s'assurer que createdAt est défini même sans Auditing
+     * Utile pour la création programmatique (ex: AdminInitializationService)
+     */
+    public void initializeAuditFields() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+        if (this.updatedAt == null) {
+            this.updatedAt = LocalDateTime.now();
+        }
+        if (this.createdBy == null) {
+            this.createdBy = "system";
+        }
+    }
+
+    /**
      * Marque l'entité comme supprimée (soft delete) - Version avec paramètre
      */
     public void softDelete(String deletedBy) {

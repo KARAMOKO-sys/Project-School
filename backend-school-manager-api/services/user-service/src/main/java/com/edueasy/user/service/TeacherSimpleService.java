@@ -20,6 +20,8 @@ public interface TeacherSimpleService {
 
     TeacherResponseDTO getTeacherByEmail(String email);
 
+    TeacherResponseDTO getTeacherByUuid(String teacherUuid);
+
     TeacherResponseDTO updateTeacherSimple(String teacherUuid, TeacherSimpleRegisterDTO requestDTO);
 
     TeacherResponseDTO updateProfilTeacherSimple(String teacherUuid, TeacherSimpleRequestDTO requestDTO);

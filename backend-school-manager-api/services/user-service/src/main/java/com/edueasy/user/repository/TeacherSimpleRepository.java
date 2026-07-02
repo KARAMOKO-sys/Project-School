@@ -24,6 +24,8 @@ public interface TeacherSimpleRepository extends JpaRepository<TeacherSimple, St
 
     Optional<TeacherSimple> findByUuid(String teacherUuid);
 
+    boolean existsByUsername(String username);
+
     Optional<TeacherSimple> findByEmail(String email);
 
     Optional<TeacherSimple> findByTeacherNumber(String teacherNumber);

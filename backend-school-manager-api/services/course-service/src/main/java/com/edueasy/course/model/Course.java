@@ -479,8 +479,8 @@ public class Course {
             case PRATIQUE -> "Pratique";
             case MIXTE -> "Mixte";
             case ATELIER -> "Atelier";
-            case LABORATOIRE -> "Laboratoire";
-            case EN_LIGNE -> "En ligne";
+          //  case LABORATOIRE -> "Laboratoire";
+         //   case EN_LIGNE -> "En ligne";
         };
     }
 

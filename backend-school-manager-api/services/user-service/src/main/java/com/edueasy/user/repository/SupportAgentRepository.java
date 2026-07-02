@@ -19,6 +19,8 @@ public interface SupportAgentRepository extends JpaRepository<SupportAgent, Long
 
     Optional<SupportAgent> findByEmail(String email);
 
+    boolean existsByUsername(String username);  // ← AJOUTER CETTE MÉTHODE
+
     boolean existsByEmail(String email);
 
     boolean existsByStaffNumber(String staffNumber);

@@ -22,6 +22,8 @@ public interface StudentSimpleRepository extends JpaRepository<StudentSimple, St
 
     // ===== Recherches par champ =====
 
+    boolean existsByUsername(String username);
+
     Optional<StudentSimple> findByEmail(String email);
 
     Optional<StudentSimple> findByUuid(String uuid);

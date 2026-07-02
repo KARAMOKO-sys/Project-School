@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   searchQuery = '';
   isScrolled = false;
   currentRoute = '';
-  showSignupModal = false; // ✅ Contrôle l'affichage de la modal
+  showSignupModal = false;
 
   // États d'authentification
   isAuthenticated = false;
@@ -119,7 +119,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.navigate(['/login']);
   }
 
-  // ✅ Méthode pour ouvrir la modal (appelée depuis le bouton Sign Up)
+  // ✅ Méthode pour ouvrir la modal
   openSignupModal(): void {
     console.log("🔓 Ouverture de la modal d'inscription");
     this.showSignupModal = true;
@@ -133,21 +133,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  // ✅ Gestion du succès d'inscription
+  // ✅ Gestion du succès d'inscription - REDIRECTION VERS /dashboard/student
   onSignupSuccess(userData: any): void {
     console.log('✅ Inscription réussie:', userData);
     this.closeSignupModal();
 
-    if (userData?.role === 'teacher' || userData?.role === 'TEACHER_SIMPLE') {
-      this.router.navigate(['/teacher/dashboard']);
-    } else {
-      this.router.navigate(['/dashboard']);
-    }
+    // 🔥 Rediriger vers /dashboard/student
+    this.router.navigate(['/dashboard/student']);
   }
 
-  // ✅ Méthode pour aller au tableau de bord
+  // ✅ Méthode pour aller au tableau de bord - REDIRECTION VERS /dashboard/student
   goToDashboard(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/dashboard/student']);
   }
 
   // ✅ Méthode pour aller au profil
@@ -173,6 +170,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
       teacher: 'Enseignant',
       admin: 'Administrateur',
       support: 'Support',
+      STUDENT_SIMPLE: 'Étudiant',
+      TEACHER_SIMPLE: 'Enseignant',
     };
     return roleMap[role] || role;
   }

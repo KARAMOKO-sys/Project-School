@@ -20,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@PrimaryKeyJoinColumn(name = "id") // 🔥 CRUCIAL : Admin partage l'ID de User
 public class Admin extends User {
 
     @Column(unique = true, nullable = false)
@@ -33,10 +34,9 @@ public class Admin extends User {
 
     private Integer accessLevel;
 
-    // ===== RELATION AVEC USER - AJOUTÉE =====
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    // ===== RELATION AVEC USER - SUPPRIMÉE =====
+    // On ne veut PAS de relation OneToOne avec User car Admin hérite de User
+    // La relation est déjà gérée par l'héritage
 
     @ElementCollection
     @Enumerated(EnumType.STRING)

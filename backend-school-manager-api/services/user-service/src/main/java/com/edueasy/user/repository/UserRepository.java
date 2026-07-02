@@ -1,3 +1,4 @@
+/*
 package com.edueasy.user.repository;
 
 import com.edueasy.common.model.User;
@@ -19,3 +20,5 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByUsername(String username);
 }
+
+ */

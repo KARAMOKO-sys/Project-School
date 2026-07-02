@@ -1,4 +1,4 @@
-package com.edueasy.user.config;
+package com.edueasy.course.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -17,9 +17,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("EduEasy User Service API")
+                        .title("EduEasy Course Service API")
                         .version("1.0.0")
-                        .description("API pour la gestion des utilisateurs du système EduEasy")
+                        .description("API pour la gestion des cours du système EduEasy")
                         .contact(new Contact()
                                 .name("EduEasy Team")
                                 .email("support@edueasy.com")

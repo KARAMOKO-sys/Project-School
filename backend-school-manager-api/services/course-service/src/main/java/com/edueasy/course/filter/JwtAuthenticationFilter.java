@@ -1,4 +1,4 @@
-package com.edueasy.user.config;
+package com.edueasy.course.filter;
 
 import com.edueasy.common.security.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -27,27 +27,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
 
-    // 🔥 LISTE COMPLÈTE DES ENDPOINTS PUBLICS
     private static final List<String> PUBLIC_ENDPOINTS = Arrays.asList(
-            // Auth
             "/api/auth/login",
             "/api/auth/refresh-token",
-
-            // 🔥 AJOUTER LES ENDPOINTS TEACHER SIMPLE PUBLICS
-            "/api/teachers-simple/",
-            "/api/teachers-simple/exists/",
-            "/teachers-simple/",
-            "/teachers-simple/exists/",
-
-            // Registration - TOUS LES ENDPOINTS D'INSCRIPTION
             "/api/students/register",
             "/api/students/register-simple",
             "/api/students-simple/register-simple",
             "/api/teachers-simple/register",
             "/api/teachers-simple/register-simple",
             "/api/support-agents/staff/register",
-
-            // 🔥 SWAGGER
             "/api/swagger-ui",
             "/api/swagger-ui/",
             "/api/swagger-ui/index.html",
@@ -55,16 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/api/swagger-ui/swagger-ui.css",
             "/api/swagger-ui/swagger-ui-bundle.js",
             "/api/swagger-ui/swagger-ui-standalone-preset.js",
-            "/api/swagger-ui/favicon-32x32.png",
-            "/api/swagger-ui/favicon-16x16.png",
             "/api/v3/api-docs",
             "/api/v3/api-docs/",
             "/api/v3/api-docs/swagger-config",
-
-            // Actuator
             "/api/actuator/health",
-
-            // Error
             "/api/error"
     );
 
@@ -77,11 +59,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         boolean isPublic = PUBLIC_ENDPOINTS.stream().anyMatch(path::startsWith);
-
         if (isPublic) {
             log.info("📝 Endpoint public: {}", path);
         }
-
         return isPublic;
     }
 
@@ -92,19 +72,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String path = request.getRequestURI();
-
-        // Log la méthode HTTP
         String method = request.getMethod();
         log.debug("🔍 Requête: {} {}", method, path);
 
-        // Si c'est un endpoint public, on passe directement
         if (shouldNotFilter(request)) {
             log.info("🔓 Passer l'endpoint public: {} {}", method, path);
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Récupérer le header Authorization
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -116,18 +92,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = authHeader.substring(7);
 
         try {
-            // Extraire l'email du token
-            String email = jwtUtil.extractEmail(jwt);
-            String userUuid = null;
+            // 🔥 CORRECTION: Essayer d'abord d'extraire l'UUID
+            String userUuid = jwtUtil.extractUuid(jwt);
 
-            if (email != null) {
-                log.debug("✅ Email extrait du token: {}", email);
+            if (userUuid != null) {
+                log.debug("✅ UUID extrait du token: {}", userUuid);
 
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userUuid);
 
                     if (!jwtUtil.validateToken(jwt, userDetails)) {
-                        log.warn("❌ Token invalide pour: {}", email);
+                        log.warn("❌ Token invalide pour: {}", userUuid);
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
                         return;
                     }
@@ -136,19 +111,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    log.debug("🔓 Authentification réussie pour: {}", email);
+                    log.debug("🔓 Authentification réussie pour: {}", userUuid);
                 }
             } else {
-                // Fallback: essayer d'extraire l'UUID
-                userUuid = jwtUtil.extractUuid(jwt);
-                if (userUuid != null) {
-                    log.debug("✅ UUID extrait du token: {}", userUuid);
+                // Fallback: essayer d'extraire l'email
+                String email = jwtUtil.extractEmail(jwt);
+                if (email != null) {
+                    log.debug("✅ Email extrait du token: {}", email);
 
                     if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(userUuid);
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                         if (!jwtUtil.validateToken(jwt, userDetails)) {
-                            log.warn("❌ Token invalide pour: {}", userUuid);
+                            log.warn("❌ Token invalide pour: {}", email);
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
                             return;
                         }
@@ -157,7 +132,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
-                        log.debug("🔓 Authentification réussie pour: {}", userUuid);
+                        log.debug("🔓 Authentification réussie pour: {}", email);
                     }
                 } else {
                     log.warn("❌ Impossible d'extraire l'email ou l'UUID du token");

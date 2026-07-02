@@ -8,6 +8,7 @@ import com.edueasy.common.dto.TeacherSimpleRegisterDTO;
 import com.edueasy.common.dto.TeacherSimpleRequestDTO;
 import com.edueasy.common.dto.UserStatusUpdateDTO;
 import com.edueasy.common.enums.StatutUserSimple;
+import com.edueasy.common.enums.UserRole;
 import com.edueasy.common.enums.UserStatus;
 import com.edueasy.common.exception.DuplicateResourceException;
 import com.edueasy.common.exception.ResourceNotFoundException;
@@ -104,9 +105,32 @@ public class TeacherSimpleServiceImpl implements TeacherSimpleService {
         teacherSimple.setLocale("fr");
         teacherSimple.setTimezone("Europe/Paris");
 
+        // 🔥 AJOUTER LE RÔLE - OBLIGATOIRE
+        teacherSimple.setRole(UserRole.TEACHER_SIMPLE);
+
+        // 🔥 S'ASSURER QUE LE USERNAME EST DÉFINI
+        if (teacherSimple.getUsername() == null || teacherSimple.getUsername().isEmpty()) {
+            String username = (requestDTO.getFirstName() + "." + requestDTO.getLastName())
+                    .toLowerCase()
+                    .replaceAll("[^a-zA-Z0-9.]", "");
+            if (username.length() > 30) {
+                username = username.substring(0, 30);
+            }
+            // Vérifier si le username existe déjà
+            String finalUsername = username;
+            int userCounter = 1;
+            while (teacherRepository.existsByUsername(finalUsername)) {
+                finalUsername = username + userCounter;
+                userCounter++;
+            }
+            teacherSimple.setUsername(finalUsername);
+            log.info("Generated username: {} for teacher", finalUsername);
+        }
+
         // Sauvegarder
         teacherSimple = teacherRepository.save(teacherSimple);
-        log.info("Teacher saved with id: {}, email: {}", teacherSimple.getId(), teacherSimple.getEmail());
+        log.info("Teacher saved with id: {}, email: {}, username: {}, role: {}",
+                teacherSimple.getId(), teacherSimple.getEmail(), teacherSimple.getUsername(), teacherSimple.getRole());
 
         // Générer le token
         String token = jwtUtil.generateIndefiniteTokenUuid(
@@ -309,6 +333,16 @@ public class TeacherSimpleServiceImpl implements TeacherSimpleService {
 
         return teacherRepository.search(keyword, pageable)
                 .map(teacherMapper::toResponseDTO);
+    }
+
+    @Override
+    public TeacherResponseDTO getTeacherByUuid(String teacherUuid) {
+        log.info("Fetching teacher by uuid: {}", teacherUuid);
+
+        TeacherSimple teacher = teacherRepository.findByUuid(teacherUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher", "uuid", teacherUuid));
+
+        return teacherMapper.toResponseDTO(teacher);
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/students")
+@RequestMapping("/students")
 public class StudentSimpleController {
 
     private static final Logger log = LoggerFactory.getLogger(StudentSimpleController.class);

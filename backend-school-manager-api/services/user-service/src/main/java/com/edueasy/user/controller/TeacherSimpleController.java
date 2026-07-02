@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/teachers-simple")
+@RequestMapping("/teachers-simple")
 @Tag(name = "Teacher Management", description = "APIs for managing teachers")
 public class TeacherSimpleController {
 
@@ -57,7 +57,7 @@ public class TeacherSimpleController {
                 .body(ApiResponse.success(response, "Simple teacher registered successfully"));
     }
 
-    /*
+
     @GetMapping("/{teacherUuid}")
     public ResponseEntity<ApiResponse<TeacherResponseDTO>> getTeacherByUuid(
             @PathVariable String teacherUuid) {
@@ -67,7 +67,7 @@ public class TeacherSimpleController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-     */
+
 
     @GetMapping("/by-email/{email}")
     public ResponseEntity<ApiResponse<TeacherResponseDTO>> getTeacherByEmail(

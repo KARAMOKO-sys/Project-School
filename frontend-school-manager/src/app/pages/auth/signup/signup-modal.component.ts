@@ -100,26 +100,19 @@ type TeacherLevel = 'OTHER' | 'MIDDLE' | 'ASSISTANT' | 'JUNIOR' | 'SENIOR' | 'EX
                   required
                 >
                   <option value="">-- Sélectionnez votre niveau --</option>
-                  <option value="ELEVE">Élève (Primaire)</option>
-                  <option value="COLLEGIEN">Collégien</option>
-                  <option value="LYCEEN">Lycéen</option>
-                  <option value="ETUDIANT">Étudiant (Université)</option>
-                  <option value="PROFESSIONEL">Professionnel</option>
+                  <option value="DEBUTANT">Débutant</option>
+                  <option value="INTERMEDIAIRE">Intermédiaire</option>
+                  <option value="AVANCE">Avancé</option>
+                  <option value="EXPERT">Expert</option>
                 </select>
               </div>
 
-              <!-- Classes spécifiques selon le niveau (info seulement) -->
+              <!-- Info niveau -->
               <div class="info-box" *ngIf="user.levelStudent">
                 <i class="fas fa-graduation-cap me-2"></i>
                 <span>
                   Niveau sélectionné :
                   <strong>{{ getStudentLevelLabel(user.levelStudent) }}</strong>
-                  <span
-                    *ngIf="getClassesForLevel().length > 0"
-                    class="d-block mt-1 text-muted small"
-                  >
-                    Classes : {{ getClassesForLevel().join(', ') }}
-                  </span>
                 </span>
               </div>
             </ng-container>
@@ -138,13 +131,12 @@ type TeacherLevel = 'OTHER' | 'MIDDLE' | 'ASSISTANT' | 'JUNIOR' | 'SENIOR' | 'EX
                   required
                 >
                   <option value="">-- Sélectionnez votre niveau --</option>
-                  <option value="OTHER">Autre</option>
-                  <option value="MIDDLE">Intermédiaire</option>
-                  <option value="ASSISTANT">Assistant</option>
-                  <option value="JUNIOR">Junior</option>
+                  <option value="DEBUTANT">Débutant</option>
+                  <option value="INTERMEDIAIRE">Intermédiaire</option>
+                  <option value="CONFIRME">Confirmé</option>
+                  <option value="EXPERIMENTE">Expérimenté</option>
                   <option value="SENIOR">Senior</option>
                   <option value="EXPERT">Expert</option>
-                  <option value="PROFESSOR">Professeur</option>
                 </select>
               </div>
 
@@ -491,37 +483,24 @@ export class SignupModalComponent {
 
   // ==================== MÉTHODES UTILITAIRES ====================
 
-  getClassesForLevel(): string[] {
-    const levelMap: Record<StudentLevel, string[]> = {
-      ELEVE: ['CP1', 'CP2', 'CE1', 'CE2', 'CM1', 'CM2'],
-      COLLEGIEN: ['6ème', '5ème', '4ème', '3ème'],
-      LYCEEN: ['2nde', '1ère', 'Terminale'],
-      ETUDIANT: ['Licence 1', 'Licence 2', 'Licence 3', 'Master 1', 'Master 2', 'Doctorat'],
-      PROFESSIONEL: ['Formation continue', 'Reconversion', 'Perfectionnement'],
-    };
-    return this.user.levelStudent ? levelMap[this.user.levelStudent as StudentLevel] || [] : [];
-  }
-
   getStudentLevelLabel(level: string): string {
     const levelMap: Record<string, string> = {
-      ELEVE: 'Élève (Primaire)',
-      COLLEGIEN: 'Collégien',
-      LYCEEN: 'Lycéen',
-      ETUDIANT: 'Étudiant (Université)',
-      PROFESSIONEL: 'Professionnel',
+      DEBUTANT: 'Débutant',
+      INTERMEDIAIRE: 'Intermédiaire',
+      AVANCE: 'Avancé',
+      EXPERT: 'Expert',
     };
     return levelMap[level] || level;
   }
 
   getTeacherLevelLabel(level: string): string {
     const levelMap: Record<string, string> = {
-      OTHER: 'Autre',
-      MIDDLE: 'Intermédiaire',
-      ASSISTANT: 'Assistant',
-      JUNIOR: 'Junior',
+      DEBUTANT: 'Débutant',
+      INTERMEDIAIRE: 'Intermédiaire',
+      CONFIRME: 'Confirmé',
+      EXPERIMENTE: 'Expérimenté',
       SENIOR: 'Senior',
       EXPERT: 'Expert',
-      PROFESSOR: 'Professeur',
     };
     return levelMap[level] || level;
   }
@@ -575,19 +554,19 @@ export class SignupModalComponent {
     let registrationData: any;
 
     if (this.userRole === 'student') {
-      // Données pour l'inscription étudiant simplifiée
+      // 🔥 Données pour l'inscription étudiant simplifiée
       registrationData = {
         firstName: this.user.firstName.trim(),
         lastName: this.user.lastName.trim(),
-        statutUserSimple: 'ELEVE',
+        statutUserSimple: 'EN_ATTENTE',  // ← Utiliser EN_ATTENTE au lieu de ELEVE
         levelStudent: this.user.levelStudent,
       };
     } else {
-      // Données pour l'inscription enseignant simplifiée
+      // 🔥 Données pour l'inscription enseignant simplifiée
       registrationData = {
         firstName: this.user.firstName.trim(),
         lastName: this.user.lastName.trim(),
-        statutUserSimple: 'ENSEIGNANT',
+        statutUserSimple: 'EN_ATTENTE',  // ← Utiliser EN_ATTENTE au lieu de ENSEIGNANT
         levelTeacher: this.user.levelTeacher,
       };
     }
@@ -615,7 +594,7 @@ export class SignupModalComponent {
               email: response.data.email,
               firstName: response.data.firstName,
               lastName: response.data.lastName,
-              role: this.userRole === 'student' ? 'ELEVE' : 'ENSEIGNANT',
+              role: this.userRole === 'student' ? 'STUDENT_SIMPLE' : 'TEACHER_SIMPLE',
             });
           }
 

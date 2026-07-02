@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,6 +47,7 @@ public class SupportAgentServiceImpl implements SupportAgentService {
         this.adminRepository = adminRepository;
     }
 
+
     @Override
     @Transactional
     public SupportAgentResponseDTO createSupportAgent(String adminUuid, SupportAgentRequestDTO requestDTO) {
@@ -63,7 +65,56 @@ public class SupportAgentServiceImpl implements SupportAgentService {
         }
 
         SupportAgent agent = supportMapper.toSupportAgentEntity(requestDTO);
-        agent.setPasswordHash(passwordEncoder.encode(DEFAULT_PASSWORD));
+
+        // 🔥 GÉNÉRER LE USERNAME SI NÉCESSAIRE
+        if (agent.getUsername() == null || agent.getUsername().isEmpty()) {
+            String baseUsername = requestDTO.getEmail().split("@")[0];
+            baseUsername = baseUsername.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+            if (baseUsername.length() > 30) {
+                baseUsername = baseUsername.substring(0, 30);
+            }
+
+            String username = baseUsername;
+            int counter = 1;
+
+            while (supportAgentRepository.existsByUsername(username)) {
+                username = baseUsername + counter;
+                counter++;
+                if (counter > 100) {
+                    username = baseUsername + UUID.randomUUID().toString().substring(0, 6);
+                    break;
+                }
+            }
+            agent.setUsername(username);
+            log.info("Generated username: {} for email: {}", username, requestDTO.getEmail());
+        }
+
+        // 🔥 GÉRER LE MOT DE PASSE
+        String rawPassword = requestDTO.getPassword();
+        if (rawPassword == null || rawPassword.isEmpty()) {
+            // Si aucun mot de passe fourni, utiliser le mot de passe par défaut
+            rawPassword = DEFAULT_PASSWORD;
+            log.info("Using default password for support agent: {}", requestDTO.getEmail());
+        } else {
+            log.info("Custom password provided for support agent: {}", requestDTO.getEmail());
+        }
+
+        // Encoder le mot de passe
+        agent.setPasswordHash(passwordEncoder.encode(rawPassword));
+
+        // Générer le staffNumber si nécessaire
+        if (agent.getStaffNumber() == null || agent.getStaffNumber().isEmpty()) {
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            String randomCode = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+            agent.setStaffNumber("SA-" + timestamp + "-" + randomCode);
+        }
+
+        agent.setRole(com.edueasy.common.enums.UserRole.SUPPORT_AGENT);
+        agent.setStatus(UserStatus.ACTIVE);
+
+        // Initialiser les champs d'audit
+        agent.initializeAuditFields();
 
         agent = supportAgentRepository.save(agent);
 

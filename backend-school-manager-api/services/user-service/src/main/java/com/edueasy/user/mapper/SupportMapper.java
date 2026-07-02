@@ -31,6 +31,8 @@ public class SupportMapper {
         agent.setLastName(requestDTO.getLastName());
         agent.setEmail(requestDTO.getEmail());
         agent.setPhoneNumber(requestDTO.getPhoneNumber());
+        // 🔥 NE PAS DÉFINIR LE PASSWORD HASH ICI - il sera encodé dans le service
+        // agent.setPasswordHash(...);
         agent.setDepartment(requestDTO.getDepartment());
         agent.setShift(requestDTO.getShift());
         agent.setHireDate(requestDTO.getHireDate());
@@ -50,9 +52,6 @@ public class SupportMapper {
         // Générer l'UUID
         agent.setUuid(UUID.randomUUID().toString());
 
-        // NOTE: Les champs createdAt et updatedAt seront automatiquement gérés
-        // par AuditTimestamps via @PrePersist et @PreUpdate
-
         return agent;
     }
 
@@ -66,6 +65,7 @@ public class SupportMapper {
                 .firstName(agent.getFirstName())
                 .lastName(agent.getLastName())
                 .email(agent.getEmail())
+                .username(agent.getUsername())
                 .phoneNumber(agent.getPhoneNumber())
                 .staffNumber(agent.getStaffNumber())
                 .department(agent.getDepartment())
@@ -121,8 +121,6 @@ public class SupportMapper {
         if (requestDTO.getResponsibilities() != null) {
             agent.setResponsibilities(requestDTO.getResponsibilities());
         }
-
-        // NOTE: updatedAt sera automatiquement mis à jour par AuditTimestamps
     }
 
     // ===== SupportStaff Mappings =====
@@ -137,6 +135,7 @@ public class SupportMapper {
         staff.setLastName(requestDTO.getLastName());
         staff.setEmail(requestDTO.getEmail());
         staff.setPhoneNumber(requestDTO.getPhoneNumber());
+        // 🔥 NE PAS DÉFINIR LE PASSWORD HASH ICI - il sera encodé dans le service
         staff.setDepartment(requestDTO.getDepartment());
         staff.setShift(requestDTO.getShift());
         staff.setSupportAgentUuid(requestDTO.getSupportAgentUuid());
@@ -156,9 +155,6 @@ public class SupportMapper {
 
         // Générer l'UUID
         staff.setUuid(UUID.randomUUID().toString());
-
-        // NOTE: Les champs createdAt et updatedAt seront automatiquement gérés
-        // par AuditTimestamps via @PrePersist et @PreUpdate
 
         return staff;
     }
@@ -233,7 +229,5 @@ public class SupportMapper {
         if (requestDTO.getResponsibilities() != null) {
             staff.setResponsibilities(requestDTO.getResponsibilities());
         }
-
-        // NOTE: updatedAt sera automatiquement mis à jour par AuditTimestamps
     }
 }

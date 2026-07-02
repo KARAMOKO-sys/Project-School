@@ -1,5 +1,6 @@
 package com.edueasy.common.model;
 
+//import com.edueasy.common.enums.NotificationFrequency;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "notification_preferences",
         indexes = {
-                @Index(name = "idx_notification_preference_user", columnList = "user_id")
+                @Index(name = "idx_notification_preference_user", columnList = "user_uuid")
         }
 )
 @Data
@@ -28,9 +29,9 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
     @Column(name = "id", length = 36)
     private String id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    // 🔥 Remplacer la relation OneToOne par un simple champ UUID
+    @Column(name = "user_uuid", nullable = false, length = 36)
+    private String userUuid;
 
     @Column(name = "email_notifications")
     @Builder.Default
@@ -80,10 +81,13 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
     @Builder.Default
     private boolean newsletter = false;
 
+    /*
     @Column(name = "notification_frequency")
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private NotificationFrequency frequency = NotificationFrequency.INSTANT;
+
+     */
 
     @Column(name = "quiet_hours_start")
     private String quietHoursStart;
@@ -291,11 +295,14 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
     /**
      * Met à jour la fréquence des notifications
      */
+    /*
     public void updateFrequency(NotificationFrequency newFrequency) {
         if (newFrequency != null) {
             this.frequency = newFrequency;
         }
     }
+
+     */
 
     /**
      * Met à jour les heures de silence
@@ -360,7 +367,7 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
      */
     public String getSummary() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Fréquence: ").append(frequency != null ? frequency.getLabel() : "Non définie");
+       // sb.append("Fréquence: ").append(frequency != null ? frequency.getLabel() : "Non définie");
         sb.append(" | Email: ").append(emailNotifications ? "✅" : "❌");
         sb.append(" | Push: ").append(pushNotifications ? "✅" : "❌");
         sb.append(" | SMS: ").append(smsNotifications ? "✅" : "❌");
@@ -369,7 +376,50 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
         return sb.toString();
     }
 
+    // ===== Nouvelles méthodes pour la gestion de l'UUID =====
+
+    /**
+     * Associe les préférences à un utilisateur par son UUID
+     */
+    public void associateWithUser(String userUuid) {
+        if (userUuid != null && !userUuid.isEmpty()) {
+            this.userUuid = userUuid;
+        } else {
+            throw new IllegalArgumentException("L'UUID de l'utilisateur ne peut pas être null ou vide");
+        }
+    }
+
+    /**
+     * Vérifie si les préférences sont associées à un utilisateur
+     */
+    public boolean hasUser() {
+        return userUuid != null && !userUuid.isEmpty();
+    }
+
+    /**
+     * Récupère l'UUID de l'utilisateur associé
+     */
+    public String getUserUuid() {
+        return userUuid;
+    }
+
+    /**
+     * Dissocie les préférences de l'utilisateur
+     */
+    public void disassociateFromUser() {
+        this.userUuid = null;
+    }
+
     // ===== Méthodes statiques de factory =====
+
+    /**
+     * Crée des préférences par défaut pour un utilisateur
+     */
+    public static NotificationPreference createDefault(String userUuid) {
+        NotificationPreference preferences = createDefault();
+        preferences.associateWithUser(userUuid);
+        return preferences;
+    }
 
     /**
      * Crée des préférences par défaut
@@ -388,10 +438,19 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
                 .attendanceNotifications(true)
                 .paymentNotifications(true)
                 .newsletter(false)
-                .frequency(NotificationFrequency.INSTANT)
+               // .frequency(NotificationFrequency.INSTANT)
                 .preferredLanguage("fr")
                 .timezone("UTC")
                 .build();
+    }
+
+    /**
+     * Crée des préférences minimales (uniquement les essentielles)
+     */
+    public static NotificationPreference createMinimal(String userUuid) {
+        NotificationPreference preferences = createMinimal();
+        preferences.associateWithUser(userUuid);
+        return preferences;
     }
 
     /**
@@ -411,10 +470,19 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
                 .attendanceNotifications(false)
                 .paymentNotifications(false)
                 .newsletter(false)
-                .frequency(NotificationFrequency.DAILY)
+                //.frequency(NotificationFrequency.DAILY)
                 .preferredLanguage("fr")
                 .timezone("UTC")
                 .build();
+    }
+
+    /**
+     * Crée des préférences pour un enseignant
+     */
+    public static NotificationPreference createTeacherDefault(String userUuid) {
+        NotificationPreference preferences = createTeacherDefault();
+        preferences.associateWithUser(userUuid);
+        return preferences;
     }
 
     /**
@@ -434,10 +502,19 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
                 .attendanceNotifications(true)
                 .paymentNotifications(false)
                 .newsletter(false)
-                .frequency(NotificationFrequency.INSTANT)
+                //.frequency(NotificationFrequency.INSTANT)
                 .preferredLanguage("fr")
                 .timezone("UTC")
                 .build();
+    }
+
+    /**
+     * Crée des préférences pour un étudiant
+     */
+    public static NotificationPreference createStudentDefault(String userUuid) {
+        NotificationPreference preferences = createStudentDefault();
+        preferences.associateWithUser(userUuid);
+        return preferences;
     }
 
     /**
@@ -457,11 +534,9 @@ public class NotificationPreference extends AuditTimestamps implements Serializa
                 .attendanceNotifications(true)
                 .paymentNotifications(false)
                 .newsletter(false)
-                .frequency(NotificationFrequency.INSTANT)
+               // .frequency(NotificationFrequency.INSTANT)
                 .preferredLanguage("fr")
                 .timezone("UTC")
                 .build();
     }
-
-
 }

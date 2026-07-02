@@ -9,7 +9,14 @@ public enum LevelTeacher {
     CONFIRME("Confirmé", 6, 10, "Expérimenté", "fa-star"),
     EXPERIMENTE("Expérimenté", 6, 10, "Très expérimenté", "fa-star"),
     SENIOR("Sénior", 11, 15, "Très expérimenté", "fa-star"),
-    EXPERT("Expert", 16, 99, "Référence", "fa-crown");
+    EXPERT("Expert", 16, 99, "Référence", "fa-crown"),
+
+    // 🔥 AJOUT DES VALEURS POUR LA COMPATIBILITÉ FRONTEND
+    MIDDLE("Intermédiaire", 3, 5, "Niveau intermédiaire", "fa-star-half-alt"),
+    ASSISTANT("Assistant", 0, 2, "En tant qu'assistant", "fa-user-plus"),
+    JUNIOR("Junior", 0, 2, "Débutant dans le métier", "fa-user-graduate"),
+    PROFESSOR("Professeur", 6, 15, "Professeur confirmé", "fa-chalkboard-teacher"),
+    OTHER("Autre", 0, 99, "Autre niveau", "fa-question-circle");
 
     private final String label;
     private final int minYearsExperience;
@@ -45,10 +52,41 @@ public enum LevelTeacher {
     }
 
     public static LevelTeacher fromString(String value) {
+        if (value == null) {
+            return null;
+        }
         try {
             return LevelTeacher.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {
-            return null;
+            // Mapping des valeurs du frontend vers les valeurs existantes
+            return switch (value.toUpperCase()) {
+                case "MIDDLE" -> INTERMEDIAIRE;
+                case "ASSISTANT" -> DEBUTANT;
+                case "JUNIOR" -> DEBUTANT;
+                case "PROFESSOR" -> EXPERT;
+                case "OTHER" -> DEBUTANT;
+                default -> null;
+            };
         }
+    }
+
+    /**
+     * Vérifie si le niveau est valide
+     */
+    public static boolean isValid(String value) {
+        if (value == null) return false;
+        try {
+            LevelTeacher.valueOf(value.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Retourne le niveau par défaut
+     */
+    public static LevelTeacher getDefault() {
+        return DEBUTANT;
     }
 }

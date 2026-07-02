@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
         url = "${user.service.url:http://localhost:8081}"
 )
 public interface UserServiceClient {
-    @GetMapping({"/api/teachers-simple/{teacherUuid}"})
+    @GetMapping({"/teachers-simple/{teacherUuid}"})
     TeacherResponseDTO getTeacherByUuid(@PathVariable("teacherUuid") String teacherUuid);
 
     @GetMapping({"/api/teachers-simple/exists/{teacherUuid}"})

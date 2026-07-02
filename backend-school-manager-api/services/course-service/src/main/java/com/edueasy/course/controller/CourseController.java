@@ -1,11 +1,11 @@
 package com.edueasy.course.controller;
 
 import com.edueasy.common.dto.ApiResponse;
-import com.edueasy.course.dto.ContentDTO;
 import com.edueasy.course.dto.CourseDTO;
 import com.edueasy.course.service.CourseService;
 import com.edueasy.course.service.CurrentUserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/courses")
 @Tag(name = "Course Management", description = "APIs for managing courses")
+@SecurityRequirement(name = "Bearer Authentication")
 public class CourseController {
 
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
@@ -29,16 +30,23 @@ public class CourseController {
         this.courseService = courseService;
         this.currentUserService = currentUserService;
     }
-
     @PostMapping
     @Operation(summary = "Create a new course", description = "Create a new course. Teacher must be authenticated.")
     public ResponseEntity<ApiResponse<CourseDTO>> createCourse(@RequestBody @Valid CourseDTO courseDTO) {
         String teacherUuid = currentUserService.getCurrentUserUuid();
+        if (teacherUuid == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("User not authenticated"));
+        }
+
+        courseDTO.setTeacherUuid(teacherUuid);
         log.info("POST /api/courses - Creating new course for teacher: {}", teacherUuid);
+
         CourseDTO createdCourse = courseService.createCourse(teacherUuid, courseDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(createdCourse, "Course created successfully"));
     }
+
 
     @GetMapping("/{courseUuid}")
     @Operation(summary = "Get course by UUID", description = "Get detailed information about a specific course")
@@ -61,6 +69,10 @@ public class CourseController {
     public ResponseEntity<ApiResponse<CourseDTO>> updateCourse(@PathVariable String courseUuid,
                                                                @RequestBody @Valid CourseDTO courseDTO) {
         String teacherUuid = currentUserService.getCurrentUserUuid();
+        if (teacherUuid == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("User not authenticated"));
+        }
         log.info("PUT /api/courses/{} - Updating course for teacher: {}", courseUuid, teacherUuid);
         CourseDTO updatedCourse = courseService.updateCourse(teacherUuid, courseUuid, courseDTO);
         return ResponseEntity.ok(ApiResponse.success(updatedCourse, "Course updated successfully"));
@@ -70,6 +82,10 @@ public class CourseController {
     @Operation(summary = "Publish course", description = "Publish a course to make it visible to students")
     public ResponseEntity<ApiResponse<CourseDTO>> publishCourse(@PathVariable String courseUuid) {
         String teacherUuid = currentUserService.getCurrentUserUuid();
+        if (teacherUuid == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("User not authenticated"));
+        }
         log.info("POST /api/courses/{}/publish - Publishing course by teacher: {}", courseUuid, teacherUuid);
         CourseDTO publishedCourse = courseService.publishCourse(teacherUuid, courseUuid);
         return ResponseEntity.ok(ApiResponse.success(publishedCourse, "Course published successfully"));
@@ -79,6 +95,10 @@ public class CourseController {
     @Operation(summary = "Delete course", description = "Soft delete a course. Only the course owner can delete.")
     public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable String courseUuid) {
         String teacherUuid = currentUserService.getCurrentUserUuid();
+        if (teacherUuid == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("User not authenticated"));
+        }
         log.info("DELETE /api/courses/{} - Deleting course for teacher: {}", courseUuid, teacherUuid);
         courseService.deleteCourse(teacherUuid, courseUuid);
         return ResponseEntity.ok(ApiResponse.success("Course deleted successfully"));
@@ -90,15 +110,5 @@ public class CourseController {
         log.info("GET /api/courses/student/{}/courses", studentUuid);
         List<CourseDTO> courses = courseService.getCoursesByStudentLevel(studentUuid);
         return ResponseEntity.ok(ApiResponse.success(courses));
-    }
-
-    @GetMapping("/student/{studentUuid}/courses/{courseUuid}/contents")
-    @Operation(summary = "Get course contents for student")
-    public ResponseEntity<ApiResponse<List<ContentDTO>>> getContentsByCourseAndStudentLevel(
-            @PathVariable String studentUuid,
-            @PathVariable String courseUuid) {
-        log.info("GET /api/courses/student/{}/courses/{}/contents", studentUuid, courseUuid);
-        List<ContentDTO> contents = courseService.getContentsByCourseAndStudentLevel(studentUuid, courseUuid);
-        return ResponseEntity.ok(ApiResponse.success(contents));
     }
 }

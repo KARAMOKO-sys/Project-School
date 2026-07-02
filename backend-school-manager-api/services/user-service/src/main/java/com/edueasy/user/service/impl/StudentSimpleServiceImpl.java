@@ -7,6 +7,7 @@ import com.edueasy.common.dto.StudentSimpleRegisterDTO;
 import com.edueasy.common.dto.UserStatusUpdateDTO;
 import com.edueasy.common.enums.LevelStudent;
 import com.edueasy.common.enums.StatutUserSimple;
+import com.edueasy.common.enums.UserRole;
 import com.edueasy.common.enums.UserStatus;
 import com.edueasy.common.exception.DuplicateResourceException;
 import com.edueasy.common.exception.ResourceNotFoundException;
@@ -65,79 +66,87 @@ public class StudentSimpleServiceImpl implements StudentSimpleService {
         return studentSimpleMapper.toResponseDTO(student);
     }
 
+    @Override
     @Transactional
     public StudentResponseDTO registerStudentSimple(StudentSimpleRegisterDTO requestDTO) {
-        log.info("=== DÉBUT registerStudentSimple ===");
-        log.info("firstName: {}", requestDTO.getFirstName());
-        log.info("lastName: {}", requestDTO.getLastName());
-        log.info("levelStudent: {}", requestDTO.getLevelStudent());
+        log.info("Registering simple student with firstName: {}, lastName: {}",
+                requestDTO.getFirstName(), requestDTO.getLastName());
 
-        try {
-            // Générer l'email
-            String baseEmail = requestDTO.getFirstName().toLowerCase().replaceAll("\\s+", "")
-                    + "." + requestDTO.getLastName().toLowerCase().replaceAll("\\s+", "")
-                    + "@edueasy.temp";
-            String email = baseEmail;
-            int counter = 1;
-            while (studentSimpleRepository.existsByEmail(email)) {
-                email = baseEmail + counter;
-                counter++;
-            }
-            log.info("Generated email: {}", email);
-
-            // Générer le mot de passe par défaut
-            String defaultPassword = "Temp@123456";
-            String encodedPassword = passwordEncoder.encode(defaultPassword);
-
-            // Générer l'UUID
-            String uuid = UUID.randomUUID().toString();
-
-            // Créer l'entité
-            StudentSimple studentSimple = studentSimpleMapper.toEntitySimple(requestDTO);
-            log.info("Student entity created: {}", studentSimple);
-
-            // Définir les propriétés
-            studentSimple.setUuid(uuid);
-            studentSimple.setEmail(email);
-            studentSimple.setPasswordHash(encodedPassword);
-            studentSimple.setStatus(UserStatus.ACTIVE);
-            studentSimple.setLocale("fr");
-            studentSimple.setTimezone("Europe/Paris");
-
-            if (requestDTO.getLevelStudent() != null) {
-                studentSimple.setLevelStudent(requestDTO.getLevelStudent());
-                log.info("✅ LevelStudent set to: {}", requestDTO.getLevelStudent());
-            } else {
-                log.warn("⚠️ LevelStudent is NULL!");
-            }
-
-            // Sauvegarder
-            studentSimple = studentSimpleRepository.save(studentSimple);
-            log.info("✅ Student saved with id: {}, email: {}, level: {}",
-                    studentSimple.getId(), studentSimple.getEmail(), studentSimple.getLevelStudent());
-
-            // Générer le token
-            String token = jwtUtil.generateIndefiniteTokenUuid(
-                    studentSimple.getUuid(),
-                    studentSimple.getStatutUserSimple() != null ?
-                            studentSimple.getStatutUserSimple().name() :
-                            StatutUserSimple.EN_ATTENTE.name()
-            );
-
-            // Créer la réponse
-            StudentResponseDTO responseDTO = studentSimpleMapper.toResponseSimpleDTO(studentSimple);
-            responseDTO.setToken(token);
-            responseDTO.setTokenType("Bearer");
-            responseDTO.setExpiresIn(null);
-
-            log.info("✅ Simple student registered successfully with uuid: {}", studentSimple.getUuid());
-            log.info("=== FIN registerStudentSimple ===");
-            return responseDTO;
-
-        } catch (Exception e) {
-            log.error("❌ ERROR in registerStudentSimple: {}", e.getMessage(), e);
-            throw e;
+        // Générer l'email
+        String baseEmail = requestDTO.getFirstName().toLowerCase().replaceAll("\\s+", "")
+                + "." + requestDTO.getLastName().toLowerCase().replaceAll("\\s+", "")
+                + "@edueasy.temp";
+        String email = baseEmail;
+        int counter = 1;
+        while (studentSimpleRepository.existsByEmail(email)) {
+            email = baseEmail + counter;
+            counter++;
         }
+        log.info("Generated email: {}", email);
+
+        // Générer le mot de passe par défaut
+        String defaultPassword = "Temp@123456";
+        String encodedPassword = passwordEncoder.encode(defaultPassword);
+
+        // Générer l'UUID
+        String uuid = UUID.randomUUID().toString();
+
+        // Générer le numéro d'étudiant
+        String studentNumber = "STU-" + System.currentTimeMillis() + "-" +
+                UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+
+        // Créer l'entité
+        StudentSimple student = studentSimpleMapper.toEntitySimple(requestDTO);
+        student.setUuid(uuid);
+        student.setEmail(email);
+        student.setPasswordHash(encodedPassword);
+       // student.setStudentNumber(studentNumber);
+        student.setStatus(UserStatus.ACTIVE);
+        student.setLocale("fr");
+        student.setTimezone("Europe/Paris");
+
+        // 🔥 AJOUTER LE RÔLE - OBLIGATOIRE
+        student.setRole(UserRole.STUDENT_SIMPLE);
+
+        // 🔥 S'ASSURER QUE LE USERNAME EST DÉFINI
+        if (student.getUsername() == null || student.getUsername().isEmpty()) {
+            String username = (requestDTO.getFirstName() + "." + requestDTO.getLastName())
+                    .toLowerCase()
+                    .replaceAll("[^a-zA-Z0-9.]", "");
+            if (username.length() > 30) {
+                username = username.substring(0, 30);
+            }
+            // Vérifier si le username existe déjà
+            String finalUsername = username;
+            int userCounter = 1;
+            while (studentSimpleRepository.existsByUsername(finalUsername)) {
+                finalUsername = username + userCounter;
+                userCounter++;
+            }
+            student.setUsername(finalUsername);
+            log.info("Generated username: {} for student", finalUsername);
+        }
+
+        // Sauvegarder
+        student = studentSimpleRepository.save(student);
+        log.info("Student saved with id: {}, email: {}, username: {}, role: {}",
+                student.getId(), student.getEmail(), student.getUsername(), student.getRole());
+
+        // Générer le token
+        String token = jwtUtil.generateIndefiniteTokenUuid(
+                student.getUuid(),
+                student.getStatutUserSimple() != null ?
+                        student.getStatutUserSimple().name() :
+                        StatutUserSimple.ACTIF.name()
+        );
+
+        StudentResponseDTO responseDTO = studentSimpleMapper.toResponseSimpleDTO(student);
+        responseDTO.setToken(token);
+        responseDTO.setTokenType("Bearer");
+        responseDTO.setExpiresIn(null);
+
+        log.info("Simple student registered successfully with uuid: {}", student.getUuid());
+        return responseDTO;
     }
 
     public StudentResponseDTO getStudentByUuid(String studentUuid) {

@@ -61,6 +61,16 @@ public class TeacherSimpleMapper {
         teacher.setTimezone(requestDTO.getTimezone() != null ? requestDTO.getTimezone() : "Europe/Paris");
         teacher.setStatus(com.edueasy.common.enums.UserStatus.PENDING);
 
+        // 🔥 GÉNÉRER LE USERNAME SI NÉCESSAIRE
+        if (teacher.getUsername() == null || teacher.getUsername().isEmpty()) {
+            String baseUsername = requestDTO.getEmail().split("@")[0];
+            baseUsername = baseUsername.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+            if (baseUsername.length() > 30) {
+                baseUsername = baseUsername.substring(0, 30);
+            }
+            teacher.setUsername(baseUsername);
+        }
+
         // Générer le numéro d'enseignant si non fourni
         if (requestDTO.getTeacherNumber() == null) {
             String timestamp = String.valueOf(System.currentTimeMillis());
@@ -79,6 +89,7 @@ public class TeacherSimpleMapper {
         }
 
         return TeacherAuthResponseDTO.builder()
+                .id(teacher.getId())
                 .uuid(teacher.getUuid())
                 .email(teacher.getEmail())
                 .firstName(teacher.getFirstName())
@@ -87,6 +98,7 @@ public class TeacherSimpleMapper {
                 .teacherNumber(teacher.getTeacherNumber())
                 .statutUserSimple(teacher.getStatutUserSimple())
                 .levelTeacher(teacher.getLevelTeacher())
+                .role(teacher.getRole() != null ? teacher.getRole().name() : null)
                 .build();
     }
 
@@ -102,6 +114,17 @@ public class TeacherSimpleMapper {
         teacher.setStatutUserSimple(StatutUserSimple.EN_ATTENTE);
         teacher.setLevelTeacher(requestDTO.getLevelTeacher());
         teacher.setStatus(com.edueasy.common.enums.UserStatus.PENDING);
+
+        // 🔥 GÉNÉRER LE USERNAME À PARTIR DU PRÉNOM ET NOM
+        String baseUsername = (requestDTO.getFirstName() + "." + requestDTO.getLastName())
+                .toLowerCase()
+                .replaceAll("[^a-zA-Z0-9.]", "");
+
+        // Tronquer si trop long
+        if (baseUsername.length() > 30) {
+            baseUsername = baseUsername.substring(0, 30);
+        }
+        teacher.setUsername(baseUsername);
 
         return teacher;
     }
